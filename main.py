@@ -7,8 +7,7 @@ import asyncio
 import os
 from dotenv import load_dotenv
 from CryoBot import CryoBot
-from CustomTextCommandCog import CustomTextCommandCog
-from HelpCog import HelpCog
+from CustomCommand.CustomTextCommandCog import CustomTextCommandCog
 
 load_dotenv()
 cryo_bot = CryoBot()
@@ -20,7 +19,6 @@ def get_token():
     return token
 
 async def setup_cogs():
-    await cryo_bot.add_cog(HelpCog(cryo_bot))
     await cryo_bot.add_cog(CustomTextCommandCog(cryo_bot))
     print("Cogs have been loaded successfully.")
 
