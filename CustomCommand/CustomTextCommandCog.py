@@ -1,12 +1,12 @@
 from discord.ext import commands
-from CustomCommand.CustomCommandHandler import CustomCommandHandler
+from CustomCommand.CustomCommandStorage import CustomCommandStorage
 DESCR_CMD_NAME = "Name of the command"
 DESCR_CMD_RESPONSE = "Response to the command"
 
 class CustomTextCommandCog(commands.Cog, description="Custom text command handler for CryoBot"):
     def __init__(self, bot):
         self.bot = bot
-        self.command_handler = CustomCommandHandler()
+        self.command_handler = CustomCommandStorage()
 
     @commands.command(name='addcommand',
                       help="!addcommand <command_name> <response>",
