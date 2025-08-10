@@ -1,3 +1,9 @@
+"""
+Author: Turgut Kalyon
+Description: Main entry point for the CryoBot application.
+This script initializes the CryoBot, loads environment variables, and sets up cogs.
+"""
+
 import discord
 from discord.ext import commands
 

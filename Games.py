@@ -1,3 +1,7 @@
+"""
+Author: Turgut Kalyon
+Description: Game module for CryoBot, providing a base class for game-related functionalities.
+"""
 from discord.ext import commands
 
 

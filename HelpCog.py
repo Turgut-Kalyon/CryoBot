@@ -1,3 +1,7 @@
+"""
+Author: Turgut Kalyon
+Description: HelpCog for CryoBot, providing help information for commands.
+"""
 from FileOperations import FileOperations
 from discord.ext import commands
 
