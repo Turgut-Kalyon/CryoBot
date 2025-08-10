@@ -205,3 +205,10 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# xml
+#  XML files are often used for configuration, data exchange, or markup languages.
+#  If you want to ignore all XML files, uncomment the following line.
+*.xml
+*.iml
+.idea/.gitignore
