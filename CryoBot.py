@@ -7,7 +7,9 @@ This script initializes the CryoBot, loads environment variables, and sets up co
 import discord
 from discord.ext import commands
 
+
 class CryoBot(commands.Bot):
+
     def __init__(self):
         super().__init__(command_prefix='!', intents=discord.Intents.all())
 
@@ -27,5 +29,3 @@ class CryoBot(commands.Bot):
 
     def is_message_from_bot(self, message):
         return message.author == self.user
-
-    
