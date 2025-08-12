@@ -6,11 +6,14 @@ This script initializes the CryoBot, loads environment variables, and sets up co
 import asyncio
 import os
 from dotenv import load_dotenv
-from AccountCommands import AccountCommands
+from cogs.AccountCommands import AccountCommands
 from CryoBot import CryoBot
-from CurrencySystem.DailyCoins import DailyCoins
-from CustomCommand.CustomTextCommandCog import CustomTextCommandCog
+from CurrencySystem.CoinTransfer import CoinTransfer
+from cogs.DailyCoins import DailyCoins
+from cogs.CustomTextCommandCog import CustomTextCommandCog
 from ErrorHandler import ErrorHandler
+from Storage import Storage
+
 
 load_dotenv()
 cryo_bot = CryoBot()
@@ -24,9 +27,14 @@ def get_token():
 
 
 async def setup_cogs():
-    await cryo_bot.add_cog(CustomTextCommandCog(cryo_bot))
-    await cryo_bot.add_cog(AccountCommands(cryo_bot))
-    await cryo_bot.add_cog(DailyCoins(cryo_bot))
+    storage_coins = Storage('users', '/files/coins.yaml')
+    storage_daily = Storage('users', '/files/daily.yaml')
+    storage_commands = Storage('commands', '/files/commands.yaml')
+    coin_transfer = CoinTransfer(storage_coins)
+
+    await cryo_bot.add_cog(CustomTextCommandCog(cryo_bot, storage_commands))
+    await cryo_bot.add_cog(AccountCommands(cryo_bot, coin_transfer, storage_coins, storage_daily))
+    await cryo_bot.add_cog(DailyCoins(cryo_bot, storage_daily, coin_transfer))
     await cryo_bot.add_cog(ErrorHandler(cryo_bot))
     print("Cogs have been loaded successfully.")
 
