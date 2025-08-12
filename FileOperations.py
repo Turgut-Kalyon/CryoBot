@@ -31,3 +31,16 @@ class CustomCommandsFileOperations(FileOperations):
     def write_file(self, data):
         with open(self.file_path, 'w', encoding="utf-8") as file:
             yaml.dump({"commands": data}, file, allow_unicode=True)
+
+class CoinsFileOperations(FileOperations):
+
+    def __init__(self, file_path):
+        super().__init__(file_path)
+
+    def write_file(self, data):
+        with open(self.file_path, 'w', encoding="utf-8") as file:
+            yaml.dump({"users": data}, file, allow_unicode=True)
+
+    def clear_yaml(self):
+        with open(self.file_path, "w") as f:
+            f.write("users:\n")

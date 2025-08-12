@@ -4,7 +4,7 @@ from FileOperations import CustomCommandsFileOperations
 class CustomCommandStorage:
 
     def __init__(self):
-        self.storage = CustomCommandsFileOperations('/response/commands.yaml')
+        self.storage = CustomCommandsFileOperations('/files/commands.yaml')
         self.custom_commands = self.storage.load_file().get('commands', {})
 
     def add_command(self, command_name, response):

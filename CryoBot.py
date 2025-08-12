@@ -7,7 +7,6 @@ This script initializes the CryoBot, loads environment variables, and sets up co
 import discord
 from discord.ext import commands
 
-
 class CryoBot(commands.Bot):
 
     def __init__(self):
