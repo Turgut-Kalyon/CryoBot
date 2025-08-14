@@ -1,7 +1,7 @@
 
 def runScript(String script, String resultDir, String VENV_DIR) {
     sh """
-    ${script} --junitxml=${resultDir}/unittest_results.xml
+    ${script} --junitxml=${resultDir}.xml
     """
 }
 
@@ -9,7 +9,7 @@ pipeline{
     agent any
     environment {
         BUILD_DIR = "${WORKSPACE}/tests"
-        UNIT_TEST_SCRIPT = "pytest -v ${BUILD_DIR}/test_unittest.py::UnitTest"
+        UNIT_TEST_SCRIPT = "pytest -v ${BUILD_DIR}/test_unittest.py::TestUnitStorage"
         RESULT_DIR = "/results/"
     }
 
@@ -22,10 +22,10 @@ pipeline{
             }
         }
 
-        stage('Run unit tests') {
+        stage('Run unit tests: storage') {
             steps {
                 script {
-                    def resultdir = env.RESULT_DIR + "unittests"
+                    def resultdir = env.RESULT_DIR + "unittests_storage"
                     runScript(env.UNIT_TEST_SCRIPT, resultdir, env.VENV_DIR)
                 }
             }
