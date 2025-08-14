@@ -1,6 +1,8 @@
 pipeline{
     agent {
-        docker('python:3.13')
+        docker{
+            image 'python:3.8'
+        }
     }
     environment {
         BUILD_DIR = "${WORKSPACE}/tests"
