@@ -18,6 +18,13 @@ pipeline{
 
     stages{
 
+
+        stage('Checkout repository') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Preparation'){
             steps{
                 script{
@@ -28,12 +35,6 @@ pipeline{
                     pip install -r requirements.txt
                     '''
                 }
-            }
-        }
-
-        stage('Checkout repository') {
-            steps {
-                checkout scm
             }
         }
 
