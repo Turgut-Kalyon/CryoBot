@@ -1,7 +1,7 @@
 
 def runScript(String script, String resultDir, String VENV_DIR) {
     sh """
-    source ${VENV_DIR}/bin/activate
+    . ${VENV_DIR}/bin/activate
     mkdir -p ${resultDir}
     ${script} --junitxml=${resultDir}/unittest_results.xml
     """
