@@ -1,13 +1,12 @@
+@Library('turgut_lib') _
+
 pipeline{
-    agent {
-        docker{
-            image 'python:3.8'
-        }
-    }
+    agent any
     environment {
         BUILD_DIR = "${WORKSPACE}/tests"
         UNIT_TEST_SCRIPT = "pytest -v ${BUILD_DIR}/unittests.py::UnitTest"
         RESULT_DIR = "/results/"
+        VENV_DIR = "${WORKSPACE}/venv"
     }
 
     stages{
@@ -16,6 +15,9 @@ pipeline{
             steps{
                 script{
                     sh '''
+                    python3 -m venv ${VENV_DIR}
+                    source ${VENV_DIR}/bin/activate
+                    pip install --upgrade pip
                     pip install -r requirements.txt
                     '''
                 }
@@ -31,7 +33,8 @@ pipeline{
         stage('Run unit tests') {
             steps {
                 script {
-                    sh "${UNIT_TEST_SCRIPT} --junitxml=${env.RESULT_DIR}/unittest_results.xml"
+                    def resultdir = env.RESULT_DIR + "unittests"
+                    runScript(env.UNIT_TEST_SCRIPT, resultdir)
                 }
             }
         }
@@ -48,3 +51,4 @@ pipeline{
         }
     }
 }
+
