@@ -68,7 +68,7 @@ class TestUnitStorage:
     def test_save_and_load(tmp_path):
         file = tmp_path / "test_save_load.yaml"
         storage = Storage("test_save_load_key", str(file))
-        loaded_storage = Storage("test_save_load_key", str(file))
+        loaded_storage = storage
         print(file)
         storage.set("test_save_load_user", 700)
         loaded_storage.load()
