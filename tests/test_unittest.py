@@ -72,9 +72,9 @@ class TestUnitStorage:
         print(file)
         storage.set("test_save_load_user", 700)
         print(loaded_storage.get("test_save_load_user"))
-        loaded_storage.load()
+
         print(loaded_storage.get("test_save_load_user"))
-        assert loaded_storage.get("test_save_load_user") == 700, "Save and Load failed"
+        assert loaded_storage.load()["test_save_load_key"].get("test_save_load_user", None) == 700, "Save and Load failed"
 
 
 
