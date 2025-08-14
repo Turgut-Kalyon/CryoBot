@@ -35,7 +35,7 @@ pipeline{
     }
     post {
         always {
-            junit "${RESULT_DIR}/Test_*.xml"
+            junit "${env.RESULT_DIR}/Test_*.xml"
         }
         success {
             echo 'Unit tests completed successfully.'
