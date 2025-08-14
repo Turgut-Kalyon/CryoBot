@@ -1,7 +1,6 @@
 
 def runScript(String script, String resultDir, String VENV_DIR) {
     sh """
-    . ${VENV_DIR}/bin/activate
     ${script} --junitxml=${resultDir}/unittest_results.xml
     """
 }
@@ -10,9 +9,8 @@ pipeline{
     agent any
     environment {
         BUILD_DIR = "${WORKSPACE}/tests"
-        UNIT_TEST_SCRIPT = "pytest -v ${BUILD_DIR}/unittests.py::UnitTest"
+        UNIT_TEST_SCRIPT = "pytest -v ${BUILD_DIR}/test_unittest.py::UnitTest"
         RESULT_DIR = "/results/"
-        VENV_DIR = "${WORKSPACE}/venv"
     }
 
     stages{
@@ -21,19 +19,6 @@ pipeline{
         stage('Checkout repository') {
             steps {
                 checkout scm
-            }
-        }
-
-        stage('Preparation'){
-            steps{
-                script{
-                    sh '''
-                    python3 -m venv ${VENV_DIR}
-                    . ${VENV_DIR}/bin/activate
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
-                    '''
-                }
             }
         }
 

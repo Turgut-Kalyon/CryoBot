@@ -1,11 +1,11 @@
 from Storage import Storage
-import pytest
-class UnitTest:
+class TestUnitStorage:
 
     @staticmethod
     def test_set_and_get(tmp_path):
         file = tmp_path / "test_storage.yaml"
         storage = Storage("test_key", str(file))
+
         storage.set("test_user", 100)
         assert storage.get("test_user") == 100, "Set and Get failed"
 
@@ -68,8 +68,11 @@ class UnitTest:
     def test_save_and_load(tmp_path):
         file = tmp_path / "test_save_load.yaml"
         storage = Storage("test_save_load_key", str(file))
+        print(file)
         storage.set("test_save_load_user", 700)
         loaded_storage = Storage("test_save_load_key", str(file))
+        print(file)
+        print(loaded_storage.get("test_save_load_user"))
         assert loaded_storage.get("test_save_load_user") == 700, "Save and Load failed"
 
 

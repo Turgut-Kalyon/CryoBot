@@ -4,7 +4,7 @@ current_dir = os.getcwd()
 
 class Storage:
     def __init__(self, main_key, source=None):
-        self.source = current_dir + source
+        self.source = source
         self.main_key = main_key
         self.open()
         self.yaml_file = self.load()
