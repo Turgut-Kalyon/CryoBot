@@ -3,7 +3,7 @@ import yaml
 current_dir = os.getcwd()
 
 class Storage:
-    def __init__(self, main_key, source=None):
+    def __init__(self, main_key, source):
         self.source = source
         self.main_key = main_key
         self.open()
