@@ -10,7 +10,7 @@ pipeline{
     environment {
         BUILD_DIR = "${WORKSPACE}/tests"
         UNIT_TEST_SCRIPT = "pytest -v ${BUILD_DIR}/test_unittest.py::TestUnitStorage"
-        RESULT_DIR = "/results/"
+        RESULT_DIR = "${WORKSPACE}/results/"
     }
 
     stages{
