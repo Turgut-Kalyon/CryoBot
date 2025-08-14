@@ -17,7 +17,7 @@ class Storage:
             yaml.dump(data, file, allow_unicode=True)
 
     def load(self) -> dict:
-        if not self.source or not os.path.isfile(self.source):
+        if not self.source:
             return {self.main_key: {}}
         with open(self.source, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f) or {}
