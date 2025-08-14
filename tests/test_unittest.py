@@ -75,7 +75,7 @@ class TestUnitStorage:
 
         print(loaded_storage.get("test_save_load_user"))
         assert loaded_storage.load()["test_save_load_key"].get("test_save_load_user", None) == 700, "Save and Load failed"
-
+        assert loaded_storage.get("test_save_load_user") == 700, "Save and Load failed for user data"
 
 
 
