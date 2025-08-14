@@ -21,7 +21,8 @@ class Storage:
             return {self.main_key: {}}
         with open(self.source, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f) or {}
-        return self.get_data(data)
+        self.yaml_file = self.get_data(data)
+        return self.yaml_file
 
     def get_data(self, data):
         return data if self.main_key in data else {self.main_key: {}}
@@ -41,7 +42,7 @@ class Storage:
         return key in self.yaml_file[self.main_key]
 
     def get(self, key):
-        return self.yaml_file[self.main_key].get(key, None)
+        return self.yaml_file[self.main_key].get(key)
 
     def set(self, key, value):
         self.yaml_file[self.main_key][key] = value
