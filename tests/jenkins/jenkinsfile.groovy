@@ -1,13 +1,15 @@
 pipeline{
-    agent any
+    agent {docker{image 'python:3.13'}}
 
     environment {
         BUILD_DIR = "${WORKSPACE}/tests"
-        UNIT_TEST_SCRIPT = "pytest -v tests/unittests.py::UnitTest"
+        UNIT_TEST_SCRIPT = "pytest -v ${BUILD_DIR}/unittests.py::UnitTest"
         RESULT_DIR = "/results/"
     }
-
-
+    options {
+        timestamps()
+        ansicolor('xterm')
+    }
 
     stages{
 
