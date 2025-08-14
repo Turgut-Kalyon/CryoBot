@@ -2,16 +2,29 @@ pipeline{
     agent any
 
     environment {
-        // Define any environment variables here
         BUILD_DIR = "${WORKSPACE}/tests"
         UNIT_TEST_SCRIPT = "pytest -v tests/unittests.py::UnitTest"
         RESULT_DIR = "/results/"
     }
 
+
+
     stages{
+
+        stage('Preparation'){
+            steps{
+                script{
+                    sh '''
+                    apt-get update
+                    apt-get install -y python3 python3-pip 
+                    pip install -r requirements.txt
+                    '''
+                }
+            }
+        }
+
         stage('Checkout repository') {
             steps {
-                // Checkout the repository
                 checkout scm
             }
         }
@@ -26,7 +39,6 @@ pipeline{
     }
     post {
         always {
-            // Archive the test results
             junit "${RESULT_DIR}/unittest_results.xml"
         }
         success {

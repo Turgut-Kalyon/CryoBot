@@ -1,0 +1,28 @@
+# Additional packages can be added as needed
+# This file is used to specify the Python packages required for testing in Jenkins.
+# Ensure that this file is kept up to date with the necessary dependencies for the test suite.
+# To install the packages, use:
+
+# pip install -r requirements.txt
+
+# This will install all the packages listed in this file.
+# Make sure to run this command in the virtual environment where the tests will be executed.
+# If you need to add a new package, simply append it to this file.
+# For example, to add 'pandas', you would add the line:
+# pandas
+# After adding a new package, remember to commit the changes to this file.
+pytest
+requests
+discord.py
+PyYaml
+python-dotenv
+
+
+# Versioned requirements for Jenkins testing environment
+# This ensures compatibility and reproducibility of the testing environment.
+# Use specific versions to avoid breaking changes in dependencies.
+pytest == 8.4.1
+requests == 2.32.4
+discord.py == 2.5.2
+PyYaml == 6.0.2
+python-dotenv == 1.1.1
