@@ -12,7 +12,7 @@ pipeline{
     environment {
         BUILD_DIR = "${WORKSPACE}/tests"
         UNIT_TEST_SCRIPT = "pytest -v ${BUILD_DIR}/test_unittest.py::TestUnitStorage"
-        RESULT_DIR = "${WORKSPACE}/results/"
+        RESULT_DIR = "${WORKSPACE}/results"
     }
 
     stages{
@@ -27,7 +27,7 @@ pipeline{
         stage('Run unit tests: storage') {
             steps {
                 script {
-                    def resultdir = env.RESULT_DIR + "Test_unittests_storage"
+                    def resultdir = env.RESULT_DIR + "/Test_unittests_storage"
                     runScript(env.UNIT_TEST_SCRIPT, resultdir, env.VENV_DIR)
                 }
             }
