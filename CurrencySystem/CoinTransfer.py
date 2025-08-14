@@ -1,4 +1,3 @@
-from FileOperations import CoinsFileOperations
 from Storage import Storage
 
 
