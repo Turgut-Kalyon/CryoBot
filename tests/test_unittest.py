@@ -69,9 +69,9 @@ class TestUnitStorage:
         file = tmp_path / "test_save_load.yaml"
         storage = Storage("test_save_load_key", str(file))
         loaded_storage = Storage("test_save_load_key", str(file))
-        storage.set("test_save_load_user", 700)
+        storage.set("test_save_load_user", 600)
         loaded_storage.load()
-        assert loaded_storage.get("test_save_load_user") == 700, "Save and Load failed for user data"
+        assert loaded_storage.get("test_save_load_user") == 600, "Save and Load failed for user data"
 
 
 
