@@ -1,8 +1,10 @@
 
 def runScript(String script, String resultDir, String VENV_DIR) {
-    sh """
-    ${script} --junitxml=${resultDir}.xml
-    """
+    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+        sh """
+        ${script} --junitxml=${resultDir}.xml
+        """
+    }
 }
 
 pipeline{
