@@ -35,7 +35,9 @@ pipeline{
     }
     post {
         always {
-            junit **/results/Test_*.xml
+            junit "**/results/Test_*.xml"
+            archiveArtifacts artifacts: '**/results/Test_*.xml', allowEmptyArchive: true
+            echo 'Unit test results archived.'
         }
         success {
             echo 'Unit tests completed successfully.'
