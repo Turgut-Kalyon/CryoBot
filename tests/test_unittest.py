@@ -68,10 +68,10 @@ class TestUnitStorage:
     def test_save_and_load(tmp_path):
         file = tmp_path / "test_save_load.yaml"
         storage = Storage("test_save_load_key", str(file))
-        print(file)
-        storage.set("test_save_load_user", 700)
         loaded_storage = Storage("test_save_load_key", str(file))
         print(file)
+        storage.set("test_save_load_user", 700)
+        loaded_storage.load()
         print(loaded_storage.get("test_save_load_user"))
         assert loaded_storage.get("test_save_load_user") == 700, "Save and Load failed"
 
