@@ -27,7 +27,7 @@ pipeline{
         stage('Run unit tests: storage') {
             steps {
                 script {
-                    def resultdir = env.RESULT_DIR + "unittests_storage"
+                    def resultdir = env.RESULT_DIR + "Test_unittests_storage"
                     runScript(env.UNIT_TEST_SCRIPT, resultdir, env.VENV_DIR)
                 }
             }
@@ -35,7 +35,7 @@ pipeline{
     }
     post {
         always {
-            junit "${RESULT_DIR}/*.xml"
+            junit "${RESULT_DIR}/Test_*.xml"
         }
         success {
             echo 'Unit tests completed successfully.'
