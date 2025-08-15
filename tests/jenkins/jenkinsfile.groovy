@@ -4,7 +4,7 @@ pipeline{
     agent any
     environment {
         BUILD_DIR = "${WORKSPACE}/tests"
-        Script_for_UnitTestStorage = "pytest -v ${BUILD_DIR}/test_unit_Storage.py::TestUnitStorage"
+        Script_for_UnitTestStorage = "pytest -v ${BUILD_DIR}/test_unittest_Storage.py::TestUnitStorage"
         Script_for_UnitTestCoinTransfer = "pytest -v ${BUILD_DIR}/test_unittest_CoinTransfer.py::TestUnitCoinTransfer"
         RESULT_DIR = "${WORKSPACE}/results"
     }
