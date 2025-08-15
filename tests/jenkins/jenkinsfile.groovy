@@ -7,7 +7,7 @@ pipeline{
         Script_for_UnitTestStorage = "pytest -v ${BUILD_DIR}/unittests/test_unittest_Storage.py::TestUnitStorage"
         Script_for_UnitTestCoinTransfer = "pytest -v ${BUILD_DIR}/unittests/test_unittest_CoinTransfer.py::TestUnitCoinTransfer"
         Script_for_IntigrationTestCracc = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtest_Cracc.py::TestCraccIntegration"
-        Script_for_IntigrationTestBalance = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtest_Balance.py::TestBalanceIntegration"
+        Script_for_IntigrationTestBalance = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtest_balance.py::TestBalanceIntegration"
         RESULT_DIR = "${WORKSPACE}/results"
     }
 
