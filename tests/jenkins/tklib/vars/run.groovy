@@ -1,5 +1,5 @@
 
-def call(String script, String resultDir, String VENV_DIR) {
+def call(String script, String resultDir) {
     catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
         sh """
         ${script} --junitxml=${resultDir}.xml
