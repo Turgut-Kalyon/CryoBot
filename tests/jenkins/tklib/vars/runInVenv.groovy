@@ -8,7 +8,7 @@ def call(String script, String resultDir) {
     catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
         sh """
         python3 -m venv .venv
-        source .venv/bin/activate
+        . .venv/bin/activate
         pip install -r requirements.txt
         ${script} --junitxml=${resultDir}.xml
         deactivate
