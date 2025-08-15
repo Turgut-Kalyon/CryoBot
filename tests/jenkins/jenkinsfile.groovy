@@ -9,10 +9,7 @@ pipeline{
         Script_for_IntigrationTestCracc = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtest_Cracc.py::TestCraccIntegration"
         RESULT_DIR = "${WORKSPACE}/results"
     }
-    options {
-        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '5'))
-        throttleConcurrentBuilds(maxTotal: 4, maxPerNode: 2)
-    }
+
     stages{
 
 
