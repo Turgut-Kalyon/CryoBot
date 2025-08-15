@@ -31,15 +31,4 @@ class TestUnitCoinTransfer:
         coin_transfer.remove_coins("NOT_test_user", 50)
         assert storage.get("NOT_test_user") is None, "Should not raise error for non-existent user"
 
-    def test_get_coins(self, tmp_path):
-        file = tmp_path / "test_get_coins.yaml"
-        storage = Storage("test_get_coins_key", str(file))
-        coin_transfer = CoinTransfer(storage)
-
-        # Simulate user existing with 100 coins
-        storage.set("test_user", 100)
-        assert coin_transfer.get_coins("test_user") == 100, "Should return correct coin amount"
-
-        # Test non-existent user
-        assert coin_transfer.get_coins("NOT_test_user") is None, "Should return None for non-existent user"
 

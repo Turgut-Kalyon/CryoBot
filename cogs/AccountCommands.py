@@ -27,7 +27,11 @@ class AccountCommands(commands.Cog):
     @commands.command(name='balance', help="!balance", description="Check your coin balance.")
     async def balance(self, ctx):
         user_id = ctx.author.id
-        balance = self.coin_transfer.get_coins(user_id)
+        balance = self.coin_storage.get(user_id)
+        if balance is None:
+            await ctx.send(f"{ctx.author.mention}, Du hast noch kein Konto. "
+                           "Erstelle ein Konto mit !cracc, um dein Guthaben zu überprüfen.")
+            return
         await ctx.send(f"{ctx.author.mention}, Du besitzt aktuell {balance} coins.")
 
     @commands.command(name='hello', help="!hello", description="Sends a greeting message.")

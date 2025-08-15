@@ -19,10 +19,6 @@ class CoinTransfer:
             return
         self.coinsByUser.adjust(user_id, -amount)
 
-    def get_coins(self, user_id):
-        if not self.is_user_existing(user_id):
-            return None
-        return self.coinsByUser.get(user_id)
 
     @property
     def get_starting_coins(self):
