@@ -6,6 +6,7 @@ pipeline{
         BUILD_DIR = "${WORKSPACE}/tests"
         Script_for_UnitTestStorage = "pytest -v ${BUILD_DIR}/test_unittest_Storage.py::TestUnitStorage"
         Script_for_UnitTestCoinTransfer = "pytest -v ${BUILD_DIR}/test_unittest_CoinTransfer.py::TestUnitCoinTransfer"
+        Script_for_IntigrationTestCracc = "pytest -v ${BUILD_DIR}/test_integration.py::TestIntegrationCracc"
         RESULT_DIR = "${WORKSPACE}/results"
     }
 
@@ -32,6 +33,15 @@ pipeline{
                 script {
                     def resultdir = env.RESULT_DIR + "/Test_unittests_cointransfer"
                     run(env.Script_for_UnitTestCoinTransfer, resultdir)
+                }
+            }
+        }
+
+        stage('Run intigration tests') {
+            steps {
+                script {
+                    def resultdir = env.RESULT_DIR + "/Test_integrationtest_cracc"
+                    runInVenv(env.Script_for_IntigrationTestCracc, resultdir)
                 }
             }
         }
