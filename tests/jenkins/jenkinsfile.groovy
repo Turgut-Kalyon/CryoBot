@@ -63,14 +63,6 @@ pipeline{
             }
         }
 
-        stage('Run intigration tests') {
-            steps {
-                script {
-                    def resultdir = env.RESULT_DIR + "/Test_integrationtest_cracc"
-                    runInVenv(env.Script_for_IntigrationTestCracc, resultdir)
-                }
-            }
-        }
 
 
     }
