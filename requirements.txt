@@ -16,6 +16,8 @@ requests
 discord.py
 PyYaml
 python-dotenv
+pytest-asyncio
+
 
 
 # Versioned requirements for Jenkins testing environment
@@ -26,3 +28,4 @@ requests == 2.32.4
 discord.py == 2.5.2
 PyYaml == 6.0.2
 python-dotenv == 1.1.1
+pytest-asyncio == 0.21.0
