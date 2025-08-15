@@ -7,6 +7,7 @@ pipeline{
         Script_for_UnitTestStorage = "pytest -v ${BUILD_DIR}/unittests/test_unittest_Storage.py::TestUnitStorage"
         Script_for_UnitTestCoinTransfer = "pytest -v ${BUILD_DIR}/unittests/test_unittest_CoinTransfer.py::TestUnitCoinTransfer"
         Script_for_IntigrationTestCracc = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtest_Cracc.py::TestCraccIntegration"
+        Script_for_IntigrationTestBalance = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtest_Balance.py::TestBalanceIntegration"
         RESULT_DIR = "${WORKSPACE}/results"
     }
 
@@ -40,6 +41,27 @@ pipeline{
             }
         }
 
+
+        stage('Run Integration tests') {
+            parallel {
+                stage('Cracc Integration Tests') {
+                    steps {
+                        script {
+                            def resultdir = env.RESULT_DIR + "/Test_integrationtest_cracc"
+                            runInVenv(env.Script_for_IntigrationTestCracc, resultdir)
+                        }
+                    }
+                }
+                stage('Balance Integration Tests') {
+                    steps {
+                        script {
+                            def resultdir = env.RESULT_DIR + "/Test_integrationtest_balance"
+                            runInVenv(env.Script_for_IntigrationTestBalance, resultdir)
+                        }
+                    }
+                }
+            }
+        }
 
         stage('Run intigration tests') {
             steps {
