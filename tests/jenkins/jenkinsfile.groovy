@@ -19,23 +19,27 @@ pipeline{
             }
         }
 
-        stage('Run unit tests: storage') {
-            steps {
-                script {
-                    def resultdir = env.RESULT_DIR + "/Test_unittests_storage"
-                    run(env.Script_for_UnitTestStorage, resultdir)
+        stage('Run Unittests'){
+            parallel{
+                stage('Storage Unit Tests') {
+                    steps {
+                        script {
+                            def resultdir = env.RESULT_DIR + "/Test_unittests_storage"
+                            run(env.Script_for_UnitTestStorage, resultdir)
+                        }
+                    }
+                }
+                stage('CoinTransfer Unit Tests') {
+                    steps {
+                        script {
+                            def resultdir = env.RESULT_DIR + "/Test_unittests_cointransfer"
+                            run(env.Script_for_UnitTestCoinTransfer, resultdir)
+                        }
+                    }
                 }
             }
         }
 
-        stage('Run unit tests: cointransfer') {
-            steps {
-                script {
-                    def resultdir = env.RESULT_DIR + "/Test_unittests_cointransfer"
-                    run(env.Script_for_UnitTestCoinTransfer, resultdir)
-                }
-            }
-        }
 
         stage('Run intigration tests') {
             steps {
@@ -45,6 +49,8 @@ pipeline{
                 }
             }
         }
+
+
     }
     post {
         always {
