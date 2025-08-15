@@ -1,17 +1,11 @@
-
-def runScript(String script, String resultDir, String VENV_DIR) {
-    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-        sh """
-        ${script} --junitxml=${resultDir}.xml
-        """
-    }
-}
+@Library('tklib') _
 
 pipeline{
     agent any
     environment {
         BUILD_DIR = "${WORKSPACE}/tests"
-        UNIT_TEST_SCRIPT = "pytest -v ${BUILD_DIR}/test_unittest.py::TestUnitStorage"
+        Script_for_UnitTestStorage = "pytest -v ${BUILD_DIR}/test_unit_Storage.py::TestUnitStorage"
+        Script_for_UnitTestCoinTransfer = "pytest -v ${BUILD_DIR}/test_unittest_CoinTransfer.py::TestUnitCoinTransfer"
         RESULT_DIR = "${WORKSPACE}/results"
     }
 
@@ -28,7 +22,16 @@ pipeline{
             steps {
                 script {
                     def resultdir = env.RESULT_DIR + "/Test_unittests_storage"
-                    runScript(env.UNIT_TEST_SCRIPT, resultdir, env.VENV_DIR)
+                    run(env.Script_for_UnitTestStorage, resultdir)
+                }
+            }
+        }
+
+        stage('Run unit tests: cointransfer') {
+            steps {
+                script {
+                    def resultdir = env.RESULT_DIR + "/Test_unittests_cointransfer"
+                    run(env.Script_for_UnitTestCoinTransfer, resultdir)
                 }
             }
         }

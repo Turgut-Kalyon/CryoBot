@@ -3,8 +3,8 @@ import yaml
 current_dir = os.getcwd()
 
 class Storage:
-    def __init__(self, main_key, source=None):
-        self.source = current_dir + source
+    def __init__(self, main_key, source):
+        self.source = source
         self.main_key = main_key
         self.open()
         self.yaml_file = self.load()
@@ -15,14 +15,15 @@ class Storage:
     def save(self, data: dict):
         with open(self.source, 'w', encoding="utf-8") as file:
             yaml.dump(data, file, allow_unicode=True)
+        self.yaml_file = data
 
     def load(self) -> dict:
-        if not self.source or not os.path.isfile(self.source):
+        if not self.source:
             return {self.main_key: {}}
         with open(self.source, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f) or {}
-        return self.get_data(data)
-
+        self.yaml_file = self.get_data(data)
+        return self.yaml_file
     def get_data(self, data):
         return data if self.main_key in data else {self.main_key: {}}
 
