@@ -9,11 +9,10 @@ class CoinTransfer:
     def add_coins(self, user_id: str, amount):
         if not self.coin_storage.exists(user_id):
             return
-        amount = self.coin_storage.get(user_id) + amount
         self.coin_storage.adjust(user_id, amount)
     def remove_coins(self, user_id, amount):
         if not self.coin_storage.exists(user_id):
-            raise ValueError(f"Nutzer ist nicht in der Datenbank.")
+            return
         self.coin_storage.adjust(user_id, -amount)
 
     def get_coins(self, user_id):
