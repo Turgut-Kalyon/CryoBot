@@ -9,7 +9,6 @@ def call(String script, String resultDir) {
         sh """
         python3 -m venv .venv
         . .venv/bin/activate
-        pip install -r requirements.txt
         ${script} --junitxml=${resultDir}.xml
         deactivate
         """

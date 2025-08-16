@@ -20,13 +20,25 @@ pipeline{
             }
         }
 
+        stage('Prepare virtual environment') {
+            steps {
+                script {
+                    sh """python3 -m venv .venv
+                       . .venv/bin/activate
+                       pip install -r requirements.txt
+                       deactivate
+                       """
+                }
+            }
+        }
+
         stage('Run Unittests'){
             parallel{
                 stage('Storage Unit Tests') {
                     steps {
                         script {
                             def resultdir = env.RESULT_DIR + "/Test_unittests_storage"
-                            run(env.Script_for_UnitTestStorage, resultdir)
+                            runInVenv(env.Script_for_UnitTestStorage, resultdir)
                         }
                     }
                 }
@@ -34,7 +46,7 @@ pipeline{
                     steps {
                         script {
                             def resultdir = env.RESULT_DIR + "/Test_unittests_cointransfer"
-                            run(env.Script_for_UnitTestCoinTransfer, resultdir)
+                            runInVenv(env.Script_for_UnitTestCoinTransfer, resultdir)
                         }
                     }
                 }

@@ -74,6 +74,16 @@ class TestUnitStorage:
         loaded_storage.load()
         assert loaded_storage.get("test_save_load_user") == 600, "Save and Load failed for user data"
 
+    @staticmethod
+    def test_set_all(tmp_path):
+        file = tmp_path / "test_set_all.yaml"
+        storage = Storage("test_set_all_key", str(file))
+        storage.set("user1", 100)
+        storage.set("user2", 200)
+        storage.set_all(None)
+        assert storage.get("user1") is None, "Set all failed for user1"
+        assert storage.get("user2") is None, "Set all failed for user2"
+
 
 
 
