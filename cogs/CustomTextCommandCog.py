@@ -53,7 +53,6 @@ class CustomTextCommandCog(commands.Cog, description="Custom text command handle
             await ctx.send(f"Befehl '{command_name}' wurde erfolgreich entfernt.")
 
 
-    TODO: "Tests for line 62-71"
     @commands.command(name='execCommand',
                       description="Executes a custom command.",
                       help="!execCommand <command_name>")
