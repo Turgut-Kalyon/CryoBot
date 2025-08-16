@@ -72,7 +72,7 @@ class TestAccountIntegration:
             "@TestUser, Du hast noch kein Konto. Erstelle ein Konto mit !cracc, um dein Guthaben zu überprüfen."
         )
 
-    async def test_balance(self):
+    async def test_with_account_balance(self):
         # Arrange
         self.mock_coin_storage.exists.return_value = True
         self.mock_coin_storage.get.return_value = 100
@@ -88,3 +88,22 @@ class TestAccountIntegration:
         self.ctx.send.assert_awaited_once_with(
             "@TestUser, Du besitzt aktuell 100 coins."
         )
+
+
+    async def test_init_account(self):
+        # Arrange
+        self.mock_coin_transfer.get_starting_coins.return_value = 100
+        self.mock_coin_storage.exists.return_value = False
+
+        # Act
+        bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+        await bot.add_cog(self.cog)
+
+        # Assert
+        await self.cog.init_account(self.ctx, self.ctx.author.id)
+        self.mock_coin_storage.set.assert_called_once_with(123, 100)
+        self.mock_daily_storage.set.assert_called_once_with(123, None)
+        self.ctx.send.assert_awaited_once_with(
+            "@TestUser, Dein Konto wurde erfolgreich erstellt!"
+        )
+

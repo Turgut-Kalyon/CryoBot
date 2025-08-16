@@ -1,5 +1,4 @@
 from Storage import Storage
-import pytest
 class TestUnitStorage:
 
     @staticmethod

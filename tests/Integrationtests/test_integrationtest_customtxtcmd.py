@@ -7,7 +7,7 @@ from discord.ext import commands
 class TestCustomCmdIntegration:
     @pytest.fixture(autouse=True)
     def setup(self):
-        self.ctx = MagicMock()
+        self.ctx = AsyncMock()
         self.ctx.send = AsyncMock()
         self.ctx.author.id = 123
         self.ctx.author.mention = "@TestUser"
@@ -116,4 +116,27 @@ class TestCustomCmdIntegration:
         self.ctx.send.assert_awaited_once_with("This is a custom command")
 
 
+    async def test_add_command_with_admin(self):
+        self.ctx.author.guild_permissions.administrator = True
+        self.cog.has_no_parameters_given = MagicMock(return_value=False)
+        self.cog.is_command_already_existing = MagicMock(return_value=False)
+
+        bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+        await bot.add_cog(self.cog)
+
+        command = bot.get_command("addcommand")
+        await command.callback(self.cog, self.ctx, "test", response="Hallo")
+
+        self.mock_cmd_storage.set.assert_called_once_with("test", "Hallo")
+        self.ctx.send.assert_awaited_once_with("Befehl 'test' wurde erfolgreich hinzugefügt.")
+
+    async def test_add_command_without_admin(self):
+        self.ctx.author.guild_permissions.administrator = False
+
+        bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+        await bot.add_cog(self.cog)
+
+        command = bot.get_command("addcommand")
+        with pytest.raises(commands.MissingPermissions):
+            await command.invoke(self.ctx)
 
