@@ -37,7 +37,7 @@ class TestBalanceIntegration:
 
         # Assert
         command = bot.get_command("balance")
-        await command(self.ctx)
+        await command.callback(self.cog, self.ctx)
 
         self.ctx.send.assert_awaited_once_with(
             "@TestUser, Du hast noch kein Konto. Erstelle ein Konto mit !cracc, um dein Guthaben zu überprüfen."
