@@ -50,6 +50,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+.coveragerc
 
 # Translations
 *.mo
@@ -211,4 +212,5 @@ __marimo__/
 #  If you want to ignore all XML files, uncomment the following line.
 *.xml
 *.iml
-.idea/.gitignore
+.idea/.gitignoreS
+
