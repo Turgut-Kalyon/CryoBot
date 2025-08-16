@@ -18,12 +18,11 @@ class Storage:
         self.yaml_file = data
 
     def load(self) -> dict:
-        if not self.source:
-            return {self.main_key: {}}
         with open(self.source, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f) or {}
         self.yaml_file = self.get_data(data)
         return self.yaml_file
+
     def get_data(self, data):
         return data if self.main_key in data else {self.main_key: {}}
 

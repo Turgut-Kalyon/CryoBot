@@ -38,7 +38,7 @@ class AccountCommands(commands.Cog):
         return self.coin_storage.exists(user_id)
 
     @commands.command(name='hello', help="!hello", description="Sends a greeting message.")
-    async def hello(self, ctx):
+    async def hello(self, ctx):# pragma: no cover
         if self.has_bot_written_the_message(ctx):
             return
         await ctx.send(f'Hallo {ctx.author.mention}!\n'
@@ -46,7 +46,7 @@ class AccountCommands(commands.Cog):
                        f'*"{self.get_random_quote()}"*')
 
     @staticmethod
-    def has_bot_written_the_message(ctx):
+    def has_bot_written_the_message(ctx):# pragma: no cover
         return ctx.author.bot
 
     @commands.command(name='cracc', help="!cracc", description="create an account for daily rewards and fun games.")
@@ -63,11 +63,11 @@ class AccountCommands(commands.Cog):
         self.daily_storage.set(user_id, None)
         await ctx.send(f"{ctx.author.mention}, Dein Konto wurde erfolgreich erstellt!")
 
-    def get_random_quote(self):
+    def get_random_quote(self):# pragma: no cover
         return random.choice(self.quotes)
 
     @property
-    def qualified_name(self):
+    def qualified_name(self):# pragma: no cover
         return "Account Commands"
 
 

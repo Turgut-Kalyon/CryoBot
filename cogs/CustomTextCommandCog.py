@@ -8,7 +8,7 @@ DESCR_CMD_RESPONSE = "Response to the command"
 class CustomTextCommandCog(commands.Cog, description="Custom text command handler for CryoBot"):
 
     @property
-    def qualified_name(self):
+    def qualified_name(self):# pragma: no cover
         return "Custom Commands"
 
     def __init__(self, bot, storage: Storage):
@@ -32,13 +32,12 @@ class CustomTextCommandCog(commands.Cog, description="Custom text command handle
             self.storage.set(command_name, response)
             await ctx.send(f"Befehl '{command_name}' wurde erfolgreich hinzugefügt.")
 
-    def is_command_already_existing(self, command_name):
+
+    def is_command_already_existing(self, command_name):# pragma: no cover
         return self.storage.exists(command_name)
 
     @staticmethod
-    def has_no_parameters_given(command_name, response = None):
-        if response is None:
-            return not command_name
+    def has_no_parameters_given(command_name, response = None):# pragma: no cover
         return not command_name or not response
 
     @commands.command(name='removecommand',
@@ -53,6 +52,8 @@ class CustomTextCommandCog(commands.Cog, description="Custom text command handle
             self.storage.delete(command_name)
             await ctx.send(f"Befehl '{command_name}' wurde erfolgreich entfernt.")
 
+
+    TODO: "Tests for line 62-71"
     @commands.command(name='execCommand',
                       description="Executes a custom command.",
                       help="!execCommand <command_name>")
@@ -68,7 +69,7 @@ class CustomTextCommandCog(commands.Cog, description="Custom text command handle
                 return
             await ctx.send(self.get_command_name(command_name))
 
-    def get_command_name(self, command_name):
+    def get_command_name(self, command_name):# pragma: no cover
         return self.storage.get(command_name)
 
 

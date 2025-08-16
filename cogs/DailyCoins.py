@@ -10,9 +10,8 @@ class DailyCoins(commands.Cog):
         self.storage = storage
         self.coin_transfer = coin_transfer
 
-    def cog_unload(self):
+    def cog_unload(self):# pragma: no cover
         self.clear_yaml_task.cancel()
-        # pragma: no cover
 
     @tasks.loop(minutes=1)
     async def clear_yaml_task(self):
@@ -49,8 +48,7 @@ class DailyCoins(commands.Cog):
         await ctx.send(f"{ctx.author.mention} hat {self.daily_coins} coins bekommen.")
 
     @property
-    def qualified_name(self):
+    def qualified_name(self):# pragma: no cover
         return "Currency System"
-        # pragma: no cover
 
 

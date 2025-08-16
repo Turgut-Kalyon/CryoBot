@@ -104,6 +104,7 @@ class TestCustomCmdIntegration:
     async def test_exec_existing_custom_command(self):
         # Test executing an existing custom command
         self.ctx.message.content = "!execCommand test"
+        self.cog.has_no_parameters_given = MagicMock(return_value=False)
         self.cog.is_command_already_existing = MagicMock(return_value=True)
         self.cog.get_command_name = MagicMock(return_value="This is a custom command")
 
@@ -114,6 +115,37 @@ class TestCustomCmdIntegration:
         await command.callback(self.cog, self.ctx, "test")
 
         self.ctx.send.assert_awaited_once_with("This is a custom command")
+
+    async def test_exec_non_existing_custom_command(self):
+        # Test executing a non-existing custom command
+        self.ctx.message.content = "!execCommand test"
+        self.cog.is_command_already_existing = MagicMock(return_value=False)
+        self.cog.has_no_parameters_given = MagicMock(return_value=False)
+
+        bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+        await bot.add_cog(self.cog)
+
+        command = bot.get_command("execCommand")
+        await command.callback(self.cog, self.ctx, "test")
+
+        self.ctx.send.assert_awaited_once_with(
+            "Es gibt keinen Befehl mit dem Namen: 'test'. "
+            "Bitte überprüfe den Befehl und versuche es erneut "
+            "ODER erstelle einen Befehl mit diesem Namen."
+        )
+
+    async def test_exec_command_no_parameters(self):
+        # Test executing a command with no parameters
+        self.ctx.message.content = "!execCommand"
+        self.cog.has_no_parameters_given = MagicMock(return_value=True)
+
+        bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+        await bot.add_cog(self.cog)
+
+        command = bot.get_command("execCommand")
+        await command.callback(self.cog, self.ctx)
+
+        self.ctx.send.assert_awaited_once_with("Gib einen Befehlnamen ein SOFORT!!!")
 
 
     async def test_add_command_with_admin(self):
