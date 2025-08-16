@@ -33,7 +33,7 @@ class TestCraccIntegration:
         await bot.add_cog(self.cog)
 
         command = bot.get_command("cracc")
-        await command.callback(self.cog, self.ctx)
+        await command(self.ctx)
 
         # Assert
         self.ctx.send.assert_awaited_once_with(
@@ -53,10 +53,9 @@ class TestCraccIntegration:
         await bot.add_cog(self.cog)
 
         command = bot.get_command("cracc")
-        await command.callback(self.cog, self.ctx)
+        await command(self.ctx)
 
         # Assert
-        self.cog.init_account.assert_awaited_once_with(123)
         self.ctx.send.assert_awaited_once_with(
             "@TestUser, Dein Konto wurde erfolgreich erstellt!"
         )

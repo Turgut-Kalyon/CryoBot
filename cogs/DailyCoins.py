@@ -2,7 +2,6 @@ from datetime import datetime, time
 from discord.ext import commands, tasks
 from CurrencySystem.CoinTransfer import CoinTransfer
 from Storage import Storage
-file_path = '/files/daily.yaml'
 
 class DailyCoins(commands.Cog):
     def __init__(self, bot, storage: Storage, coin_transfer: CoinTransfer):
