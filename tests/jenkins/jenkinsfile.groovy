@@ -6,8 +6,7 @@ pipeline{
         BUILD_DIR = "${WORKSPACE}/tests"
         Script_for_UnitTestStorage = "pytest -v ${BUILD_DIR}/unittests/test_unittest_Storage.py::TestUnitStorage"
         Script_for_UnitTestCoinTransfer = "pytest -v ${BUILD_DIR}/unittests/test_unittest_CoinTransfer.py::TestUnitCoinTransfer"
-        Script_for_IntigrationTestCracc = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtest_Cracc.py::TestCraccIntegration"
-        Script_for_IntigrationTestBalance = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtest_balance.py::TestBalanceIntegration"
+        Script_for_IntigrationTestAccount = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtest_accountcmd.py::TestAccountIntegration"
         Script_for_IntigrationTestDaily = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtests_daily.py::TestDailyIntegration"
         RESULT_DIR = "${WORKSPACE}/results"
     }
@@ -35,7 +34,7 @@ pipeline{
 
         stage('Run Unittests'){
             parallel{
-                stage('Storage Unit Tests') {
+                stage('Storage Unittests') {
                     steps {
                         script {
                             def resultdir = env.RESULT_DIR + "/Test_unittests_storage"
@@ -43,7 +42,7 @@ pipeline{
                         }
                     }
                 }
-                stage('CoinTransfer Unit Tests') {
+                stage('CoinTransfer Unittests') {
                     steps {
                         script {
                             def resultdir = env.RESULT_DIR + "/Test_unittests_cointransfer"
@@ -55,25 +54,17 @@ pipeline{
         }
 
 
-        stage('Run Integration tests') {
+        stage('Run integration tests') {
             parallel {
-                stage('Cracc Integration Tests') {
+                stage('AccountCommands integration tests') {
                     steps {
                         script {
                             def resultdir = env.RESULT_DIR + "/Test_integrationtest_cracc"
-                            runInVenv(env.Script_for_IntigrationTestCracc, resultdir)
+                            runInVenv(env.Script_for_IntigrationTestAccount, resultdir)
                         }
                     }
                 }
-                stage('Balance Integration Tests') {
-                    steps {
-                        script {
-                            def resultdir = env.RESULT_DIR + "/Test_integrationtest_balance"
-                            runInVenv(env.Script_for_IntigrationTestBalance, resultdir)
-                        }
-                    }
-                }
-                stage('Daily Integration Tests') {
+                stage('DailyCommand integration tests') {
                     steps {
                         script {
                             def resultdir = env.RESULT_DIR + "/Test_integrationtest_daily"
