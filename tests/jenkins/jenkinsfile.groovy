@@ -8,6 +8,7 @@ pipeline{
         Script_for_UnitTestCoinTransfer = "pytest -v ${BUILD_DIR}/unittests/test_unittest_CoinTransfer.py::TestUnitCoinTransfer"
         Script_for_IntigrationTestCracc = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtest_Cracc.py::TestCraccIntegration"
         Script_for_IntigrationTestBalance = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtest_balance.py::TestBalanceIntegration"
+        Script_for_IntigrationTestDaily = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtests_daily.py::TestDailyIntegration"
         RESULT_DIR = "${WORKSPACE}/results"
     }
 
@@ -69,6 +70,14 @@ pipeline{
                         script {
                             def resultdir = env.RESULT_DIR + "/Test_integrationtest_balance"
                             runInVenv(env.Script_for_IntigrationTestBalance, resultdir)
+                        }
+                    }
+                }
+                stage('Daily Integration Tests') {
+                    steps {
+                        script {
+                            def resultdir = env.RESULT_DIR + "/Test_integrationtest_daily"
+                            runInVenv(env.Script_for_IntigrationTestDaily, resultdir)
                         }
                     }
                 }
