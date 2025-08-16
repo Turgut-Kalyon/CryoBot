@@ -28,33 +28,40 @@ class AccountCommands(commands.Cog):
     async def balance(self, ctx):
         user_id = ctx.author.id
         balance = self.coin_storage.get(user_id)
-        if balance is None:
+        if not self.has_account(balance):
             await ctx.send(f"{ctx.author.mention}, Du hast noch kein Konto. "
                            "Erstelle ein Konto mit !cracc, um dein Guthaben zu überprüfen.")
             return
         await ctx.send(f"{ctx.author.mention}, Du besitzt aktuell {balance} coins.")
 
+    def has_account(self, user_id):
+        return self.coin_storage.exists(user_id)
+
     @commands.command(name='hello', help="!hello", description="Sends a greeting message.")
     async def hello(self, ctx):
-        if ctx.author.bot:
+        if self.has_bot_written_the_message(ctx):
             return
         await ctx.send(f'Hallo {ctx.author.mention}!\n'
                        f'Hier ist dein persönliches Zitat:\n'
                        f'*"{self.get_random_quote()}"*')
 
+    @staticmethod
+    def has_bot_written_the_message(ctx):
+        return ctx.author.bot
+
     @commands.command(name='cracc', help="!cracc", description="create an account for daily rewards and fun games.")
     async def cracc(self, ctx):
         user_id = ctx.author.id
-        if self.coin_storage.exists(user_id):
+        if self.has_account(user_id):
             await ctx.send(f"{ctx.author.mention}, Du hast bereits ein Konto.")
-        else:
-            await self.init_account(user_id)
-            await ctx.send(f"{ctx.author.mention}, Dein Konto wurde erfolgreich erstellt!")
+            return
+        await self.init_account(ctx, user_id)
 
-    async def init_account(self, user_id):
+    async def init_account(self, ctx, user_id):
         starting_coins = self.coin_transfer.get_starting_coins()
         self.coin_storage.set(user_id, starting_coins)
         self.daily_storage.set(user_id, None)
+        await ctx.send(f"{ctx.author.mention}, Dein Konto wurde erfolgreich erstellt!")
 
     def get_random_quote(self):
         return random.choice(self.quotes)

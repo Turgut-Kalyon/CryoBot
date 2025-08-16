@@ -22,18 +22,24 @@ class CustomTextCommandCog(commands.Cog, description="Custom text command handle
     async def add_command(self, ctx,
         command_name: str = commands.parameter(description=DESCR_CMD_NAME),*,
         response: str = commands.parameter(description=DESCR_CMD_RESPONSE)):
-        try:
-            if not command_name or not response:
+            if self.has_no_parameters_given(command_name, response):
                 await ctx.send("Befehlsname und Antwort dürfen nicht leer sein.")
-                raise ValueError("Befehlsname und Antwort dürfen nicht leer sein.")
-            if self.storage.exists(command_name):
+                return
+            if self.is_command_already_existing(command_name):
                 await ctx.send(f"Befehl '{command_name}' existiert bereits. "
                                  f"Bitte wähle einen anderen Namen.")
                 return
             self.storage.set(command_name, response)
             await ctx.send(f"Befehl '{command_name}' wurde erfolgreich hinzugefügt.")
-        except ValueError as e:
-            await ctx.send(str(e))
+
+    def is_command_already_existing(self, command_name):
+        return self.storage.exists(command_name)
+
+    @staticmethod
+    def has_no_parameters_given(command_name, response = None):
+        if response is None:
+            return not command_name
+        return not command_name or not response
 
     @commands.command(name='removecommand',
                       description="Removes a custom command.",
@@ -41,34 +47,29 @@ class CustomTextCommandCog(commands.Cog, description="Custom text command handle
     @commands.has_permissions(administrator=True)
     async def remove_command(self, ctx,
         command_name: str = commands.parameter(description=DESCR_CMD_NAME)):
-        try:
-            if not self.storage.exists(command_name):
-                await ctx.send(f"Befehl '{command_name}' existiert nicht. "
-                                 f"Bitte überprüfe den Befehl und versuche es erneut.")
+            if not self.is_command_already_existing(command_name):
+                await ctx.send(f"Befehl '{command_name}' existiert nicht. Bitte überprüfe den Befehl und versuche es erneut.")
                 return
             self.storage.delete(command_name)
             await ctx.send(f"Befehl '{command_name}' wurde erfolgreich entfernt.")
-        except ValueError as e:
-            await ctx.send(str(e))
 
-    @commands.command(name='customcommand',
+    @commands.command(name='execCommand',
                       description="Executes a custom command.",
-                      help="!customcommand <command_name>")
-    async def custom_command(self, ctx,
+                      help="!execCommand <command_name>")
+    async def exec_command(self, ctx,
         command_name: str = commands.parameter(description=DESCR_CMD_NAME)):
-        try:
-            if not command_name:
+            if self.has_no_parameters_given(command_name):
                 await ctx.send("Gib einen Befehlnamen ein SOFORT!!!")
-                raise ValueError("Befehlsname darf nicht leer sein.")
-            if not self.storage.exists(command_name):
+                return
+            if not self.is_command_already_existing(command_name):
                 await ctx.send(f"Es gibt keinen Befehl mit dem Namen: '{command_name}'. "
                                  f"Bitte überprüfe den Befehl und versuche es erneut "
                                  f"ODER erstelle einen Befehl mit diesem Namen.")
                 return
-            await ctx.send(self.storage.get(command_name))
-        except ValueError as e:
-            ctx.send(str(e))
-            return
+            await ctx.send(self.get_command_name(command_name))
+
+    def get_command_name(self, command_name):
+        return self.storage.get(command_name)
 
 
 
