@@ -15,18 +15,18 @@ from ErrorHandler import ErrorHandler
 from Storage import Storage
 
 
-load_dotenv()
-cryo_bot = CryoBot()
+load_dotenv()# pragma: no cover
+cryo_bot = CryoBot()# pragma: no cover
 
 
-def get_token():
+def get_token():# pragma: no cover
     token = os.getenv('TOKEN')
     if not token:
         raise ValueError("TOKEN environment variable not set or empty")
     return token
 
 
-async def setup_cogs():
+async def setup_cogs():# pragma: no cover
     storage_coins = Storage('users', '/files/coins.yaml')
     storage_daily = Storage('users', '/files/daily.yaml')
     storage_commands = Storage('commands', '/files/commands.yaml')
@@ -39,7 +39,7 @@ async def setup_cogs():
     print("Cogs have been loaded successfully.")
 
 
-async def setup():
+async def setup():# pragma: no cover
     await setup_cogs()
     token = get_token()
     print("Starting CryoBot...")

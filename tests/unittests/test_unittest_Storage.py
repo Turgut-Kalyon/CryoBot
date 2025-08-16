@@ -26,6 +26,13 @@ class TestUnitStorage:
         assert storage.exists("test_delete") is False, "Delete operation failed"
 
     @staticmethod
+    def test_delete_non_existent(tmp_path):
+        file = tmp_path / "test_delete_non_existent.yaml"
+        storage = Storage("test_delete_non_existent_key", str(file))
+        storage.delete("non_existent_user")
+        assert storage.get("non_existent_user") is None, "Delete operation should not raise error for non-existent user"
+
+    @staticmethod
     def test_adjust_decrease(tmp_path):
         file = tmp_path / "test_adjust_decrease.yaml"
         storage = Storage("test_adjust_key", str(file))
@@ -48,6 +55,13 @@ class TestUnitStorage:
         storage.set("test_adjust", 300)
         storage.adjust("test_adjust", 100)
         assert storage.get("test_adjust") == 400, "Adjust operation failed for increase"
+
+    @staticmethod
+    def test_adjust_non_existent_user(tmp_path):
+        file = tmp_path / "test_adjust_non_existent.yaml"
+        storage = Storage("test_adjust_non_existent_key", str(file))
+        storage.adjust("non_existent_user", 50)
+        assert storage.get("non_existent_user") is None, "Adjust operation should not raise error for non-existent user"
 
     @staticmethod
     def test_clear(tmp_path):

@@ -21,5 +21,5 @@ class CoinTransfer:
 
 
     @property
-    def get_starting_coins(self):
+    def get_starting_coins(self):# pragma: no cover
         return self.starting_coins

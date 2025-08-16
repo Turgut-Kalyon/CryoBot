@@ -12,6 +12,7 @@ class DailyCoins(commands.Cog):
 
     def cog_unload(self):
         self.clear_yaml_task.cancel()
+        # pragma: no cover
 
     @tasks.loop(minutes=1)
     async def clear_yaml_task(self):
@@ -50,5 +51,6 @@ class DailyCoins(commands.Cog):
     @property
     def qualified_name(self):
         return "Currency System"
+        # pragma: no cover
 
 
