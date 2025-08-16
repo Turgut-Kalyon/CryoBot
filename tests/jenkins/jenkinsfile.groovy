@@ -8,6 +8,7 @@ pipeline{
         Script_for_UnitTestCoinTransfer = "pytest -v ${BUILD_DIR}/unittests/test_unittest_CoinTransfer.py::TestUnitCoinTransfer"
         Script_for_IntigrationTestAccount = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtest_accountcmd.py::TestAccountIntegration"
         Script_for_IntigrationTestDaily = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtests_daily.py::TestDailyIntegration"
+        Script_for_IntigrationTestCustomCmd = "pytest -v ${BUILD_DIR}/Integrationtests/test_integrationtest_customtxtcmd.py::TestCustomCmdIntegration"
         RESULT_DIR = "${WORKSPACE}/results"
     }
 
@@ -69,6 +70,14 @@ pipeline{
                         script {
                             def resultdir = env.RESULT_DIR + "/Test_integrationtest_daily"
                             runInVenv(env.Script_for_IntigrationTestDaily, resultdir)
+                        }
+                    }
+                }
+                stage('CustomCommand integration tests') {
+                    steps {
+                        script {
+                            def resultdir = env.RESULT_DIR + "/Test_integrationtest_customcmd"
+                            runInVenv(env.Script_for_IntigrationTestCustomCmd, resultdir)
                         }
                     }
                 }
