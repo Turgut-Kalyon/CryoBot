@@ -1,42 +1,33 @@
 # CryoBot
 
-<img src="https://socialify.git.ci/Turgut-Kalyon/CryoBot/image?font=JetBrains+Mono&language=1&name=1&owner=1&pattern=Solid&theme=Dark" alt="CryoBot" width="640" height="320" />
-
-CryoBot is a Discord bot designed to enhance server interactions by allowing users to create and manage custom text commands. Built with Python and `discord.py`, it provides a modular architecture for easy command management and extensibility.
+CryoBot is a versatile Discord bot built with Python and the `discord.py` library. It enhances server engagement through a customizable command system, a user economy, and daily rewards. Its modular architecture, based on Cogs, allows for easy expansion and maintenance.
 
 ## Features
 
--   **Modular Design:** Utilizes `discord.py` Cogs for organized and scalable command management.
--   **Custom Text Command:** Allows users to create custom text-based commands on-the-fly.
+-   **Custom Commands**: Server administrators can dynamically add, remove, and execute simple text-based commands.
+-   **Economy System**: Users can create an account, check their balance, and earn daily coins.
+-   **Persistent Storage**: User data, custom commands, and daily reward statuses are saved in YAML files, ensuring data persistence across bot restarts.
+-   **Modular Design**: Commands are organized into Cogs (`AccountCommands`, `CustomTextCommandCog`, `DailyCoins`) for clean and scalable code.
+-   **Robust Testing**: Includes a comprehensive suite of unit and integration tests using `pytest`, integrated into a Jenkins CI/CD pipeline.
+-   **Error Handling**: A dedicated error handler cog provides feedback for failed commands.
 
 ## Commands
 
-The bot responds to the following commands. The default prefix is `!`.
+The default command prefix is `!`.
 
--   `!help <command_name>`
-    -   Displays a list of all available commands.
-    -   When a specific command is provided (e.g., `!help addcommand`), it shows detailed information, including description and usage for that command.
-
--   `!hello`
-    -   A simple command that makes the bot greet the user who sent the message.
-
--   `!addcommand <command_name> <response>`
-    -   Creates a custom text-based command.
-
--   `!removecommand <command_name>`
-    -   Removes a custom text-based command.
-
--   `!customcommand <command_name>`
-    -   Executes a created custom text-based command.
-
--   `!listcommands`
-    -   Lists all custom text-based commands that have been created.
-
-
+| Command | Description | Usage | Permissions |
+| :--- | :--- | :--- | :--- |
+| `!hello` | Greets the user with a random quote. | `!hello` | Everyone |
+| `!cracc` | Creates a new user account with starting coins. | `!cracc` | Everyone |
+| `!balance` | Checks your current coin balance. | `!balance` | Everyone |
+| `!daily` | Claims your daily coin reward. Can be used once per day. | `!daily` | Everyone |
+| `!addcommand` | Adds a new custom text command. | `!addcommand <name> <response>` | Administrator |
+| `!removecommand`| Removes an existing custom command. | `!removecommand <name>` | Administrator |
+| `!execCommand` | Executes a custom command and shows its response. | `!execCommand <name>` | Everyone |
 
 ## Getting Started
 
-Follow these instructions to get a local copy up and running.
+Follow these instructions to get a local copy of CryoBot up and running.
 
 ### Prerequisites
 
@@ -47,53 +38,72 @@ Follow these instructions to get a local copy up and running.
 
 1.  **Clone the repository:**
     ```sh
-    git clone https://github.com/turgut-kalyon/cryobot.git
-    cd cryobot
+    git clone https://github.com/Turgut-Kalyon/CryoBot.git
+    cd CryoBot
     ```
 
-2.  **Install dependencies:**
-    It is recommended to use a virtual environment. The bot relies on the following libraries:
-    -   `discord.py`
-    -   `PyYAML`
-    -   `python-dotenv`
-
-    You can install them using pip:
+2.  **Set up a virtual environment:**
     ```sh
-    pip install discord.py pyyaml python-dotenv
+    # For Unix/macOS
+    python3 -m venv venv
+    source venv/bin/activate
+    
+    # For Windows
+    python -m venv venv
+    .\venv\Scripts\activate
     ```
 
-3.  **Configure the environment:**
-    -   Create a file named `.env` in the root directory of the project.
-    -   Add your Discord bot token to this file:
+3.  **Install dependencies from `requirements.txt`:**
+    ```sh
+    pip install -r requirements.txt
     ```
+
+4.  **Configure the environment:**
+    -   Create a file named `.env` in the root directory of the project.
+    -   Add your Discord bot token to this file. The `main.py` script will load this variable.
+    ```env
     TOKEN=YOUR_DISCORD_BOT_TOKEN_HERE
     ```
 
 ### Running the Bot
 
-Execute the main script to start the bot:
+Execute the `main.py` script to start the bot:
 ```sh
 python main.py
 ```
-You should see a confirmation message in your console once the bot has successfully logged in.
-
-If you have a raspberry pi, you can run the bot with the following command. I would recommend using a terminal multiplexer like `tmux` or `screen` to keep the bot running in the background.:
-```sh
-screen -S cryobot
-cd /cryobot
-source venv/bin/activate  # Activate your virtual environment if you are using one
-python3 main.py
-```
+You should see a confirmation message in your console once the bot has successfully logged in and loaded its cogs.
 
 ## Project Structure
 
+The repository is organized to separate concerns, making it easier to navigate and maintain.
+
 ```
-.
-├── CryoBot.py                      # Defines the main CryoBot class and core event handlers.
-├── FileOperations.py               # Utility class for reading and writing YAML files.
-├── CustomCommands/
-    ├── CustomCommandStorage.py     # Handles storage and retrieval of custom commands.
-    └── CustomTextCommandCog.py     # Manages custom text commands.
-├── main.py                         # The main entry point for the application.
-└── response/
-    └── custom_commands.yaml        # YAML file containing command name and response for the custom text commands.
+CryoBot/
+├── main.py                    # Main entry point, loads cogs and starts the bot.
+├── CryoBot.py                 # Defines the core bot class, subclass of discord.ext.commands.Bot.
+├── Storage.py                 # Handles reading from and writing to YAML data files.
+├── ErrorHandler.py            # Cog for handling command errors globally.
+├── requirements.txt           # Lists all Python dependencies for the project.
+│
+├── cogs/                      # Contains all command modules (Cogs).
+│   ├── AccountCommands.py     # Manages user accounts, balance, and greetings.
+│   ├── CustomTextCommandCog.py# Manages creation, deletion, and execution of custom commands.
+│   └── DailyCoins.py          # Handles the daily coin reward system.
+│
+├── CurrencySystem/            # Contains the logic for the economy features.
+│   └── CoinTransfer.py        # Implements coin transactions (add/remove).
+│
+├── files/                     # Stores persistent data in YAML format.
+│   ├── coins.yaml             # Stores user coin balances.
+│   ├── commands.yaml          # Stores custom command definitions.
+│   └── daily.yaml             # Stores timestamps for daily reward claims.
+│
+└── tests/                     # Contains all tests for the application.
+    ├── unittests/             # Unit tests for individual components.
+    ├── Integrationtests/      # Integration tests for combined components.
+    └── jenkins/               # Jenkins CI/CD pipeline configuration (groovy scripts).
+```
+
+## Testing
+
+The project is configured for continuous integration with Jenkins. The `tests/jenkins/jenkinsfile.groovy` defines a pipeline that prepares a virtual environment, installs dependencies, and runs a full suite of unit (`tests/unittests`) and integration tests (`tests/Integrationtests`) using `pytest`. Test results are generated in JUnit XML format for reporting.
