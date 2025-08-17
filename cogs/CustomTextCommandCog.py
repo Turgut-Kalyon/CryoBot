@@ -3,7 +3,8 @@ from Storage import Storage
 
 DESCR_CMD_NAME = "Name of the command"
 DESCR_CMD_RESPONSE = "Response to the command"
-
+description_in_help_commandname = commands.parameter(description=DESCR_CMD_NAME)
+description_in_help_response = commands.parameter(description=DESCR_CMD_RESPONSE)
 
 class CustomTextCommandCog(commands.Cog, description="Custom text command handler for CryoBot"):
 
@@ -20,8 +21,8 @@ class CustomTextCommandCog(commands.Cog, description="Custom text command handle
                       description="Adds a custom command with a response.")
     @commands.has_permissions(administrator=True)
     async def add_command(self, ctx,
-        command_name: str = commands.parameter(description=DESCR_CMD_NAME),*,
-        response: str = commands.parameter(description=DESCR_CMD_RESPONSE)):
+                          command_name: str = description_in_help_commandname, *,
+                          response: str = description_in_help_response):
             if self.has_no_parameters_given(command_name, response):
                 await ctx.send("Befehlsname und Antwort dürfen nicht leer sein.")
                 return
