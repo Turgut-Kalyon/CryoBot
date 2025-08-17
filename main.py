@@ -27,9 +27,10 @@ def get_token():# pragma: no cover
 
 
 async def setup_cogs():# pragma: no cover
-    storage_coins = Storage('users', '/files/coins.yaml')
-    storage_daily = Storage('users', '/files/daily.yaml')
-    storage_commands = Storage('commands', '/files/commands.yaml')
+    CURRENT_DIR = os.getcwd()
+    storage_coins = Storage('users', CURRENT_DIR + '/files/coins.yaml')
+    storage_daily = Storage('users', CURRENT_DIR + '/files/daily.yaml')
+    storage_commands = Storage('commands', CURRENT_DIR + '/files/commands.yaml')
     coin_transfer = CoinTransfer(storage_coins)
 
     await cryo_bot.add_cog(CustomTextCommandCog(cryo_bot, storage_commands))

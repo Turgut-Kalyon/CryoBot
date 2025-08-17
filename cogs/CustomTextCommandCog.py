@@ -16,6 +16,8 @@ class CustomTextCommandCog(commands.Cog, description="Custom text command handle
         self.bot = bot
         self.storage = storage
 
+
+
     @commands.command(name='addcommand',
                       help="!addcommand <command_name> <response>",
                       description="Adds a custom command with a response.")
@@ -38,8 +40,11 @@ class CustomTextCommandCog(commands.Cog, description="Custom text command handle
         return self.storage.exists(command_name)
 
     @staticmethod
-    def has_no_parameters_given(command_name, response = None):# pragma: no cover
-        return not command_name or not response
+    def has_no_parameters_given(command_name, response = "no parameter given"):# pragma: no cover
+        if not command_name or not response:
+            return True
+        return False
+
 
     @commands.command(name='removecommand',
                       description="Removes a custom command.",
@@ -47,6 +52,9 @@ class CustomTextCommandCog(commands.Cog, description="Custom text command handle
     @commands.has_permissions(administrator=True)
     async def remove_command(self, ctx,
         command_name: str = commands.parameter(description=DESCR_CMD_NAME)):
+            if self.has_no_parameters_given(command_name):
+                await ctx.send("Gib einen Befehlnamen ein SOFORT!!!")
+                return
             if not self.is_command_already_existing(command_name):
                 await ctx.send(f"Befehl '{command_name}' existiert nicht. Bitte überprüfe den Befehl und versuche es erneut.")
                 return

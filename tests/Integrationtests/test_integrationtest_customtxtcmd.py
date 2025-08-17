@@ -1,6 +1,9 @@
 import discord
 import pytest
 from unittest.mock import AsyncMock, MagicMock
+
+from discord.ext.commands import MissingPermissions
+
 from cogs.CustomTextCommandCog import CustomTextCommandCog
 from discord.ext import commands
 @pytest.mark.asyncio
@@ -86,6 +89,17 @@ class TestCustomCmdIntegration:
             "Befehl 'test' wurde erfolgreich entfernt."
         )
 
+    async def test_remove_command_admin_permissions(self):
+        # Test removing a custom command without admin permissions
+        self.ctx.author.guild_permissions.administrator = False
+
+        bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+        await bot.add_cog(self.cog)
+
+        command = bot.get_command("removecommand")
+        with pytest.raises(MissingPermissions):
+            await command.invoke(self.ctx)
+
     async def test_remove_non_existing_custom_command(self):
         # Test removing a custom command that does not exist
         self.ctx.message.content = "!removecommand test"
@@ -169,6 +183,16 @@ class TestCustomCmdIntegration:
         await bot.add_cog(self.cog)
 
         command = bot.get_command("addcommand")
-        with pytest.raises(commands.MissingPermissions):
+
+        with pytest.raises(MissingPermissions):
             await command.invoke(self.ctx)
+
+    async def test_has_no_parameters_given(self):
+        assert self.cog.has_no_parameters_given("", "") is True
+        assert self.cog.has_no_parameters_given("test", "") is True
+        assert self.cog.has_no_parameters_given("", "response") is True
+        assert self.cog.has_no_parameters_given("test", "response") is False
+        assert self.cog.has_no_parameters_given("test", "no parameter given") is False
+        assert self.cog.has_no_parameters_given("", "no parameter given") is True
+
 

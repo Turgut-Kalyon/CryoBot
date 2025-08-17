@@ -9,4 +9,13 @@ class Game(commands.Cog):
 
     def __init__(self):
         super().__init__()
-        self.game_name = None
+
+
+class Roulette(Game):
+    """
+    A class representing a Roulette game.
+    This class can be extended to implement specific game logic.
+    """
+    def __init__(self):
+        super().__init__()
+
