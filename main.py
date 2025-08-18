@@ -13,7 +13,7 @@ from cogs.DailyCoins import DailyCoins
 from cogs.CustomTextCommandCog import CustomTextCommandCog
 from ErrorHandler import ErrorHandler
 from Storage import Storage
-
+from cogs.Games.Games import GuessingGame
 
 load_dotenv()# pragma: no cover
 cryo_bot = CryoBot()# pragma: no cover
@@ -37,6 +37,7 @@ async def setup_cogs():# pragma: no cover
     await cryo_bot.add_cog(AccountCommands(cryo_bot, coin_transfer, storage_coins, storage_daily))
     await cryo_bot.add_cog(DailyCoins(cryo_bot, storage_daily, coin_transfer))
     await cryo_bot.add_cog(ErrorHandler(cryo_bot))
+    await cryo_bot.add_cog(GuessingGame(cryo_bot))
     print("Cogs have been loaded successfully.")
 
 

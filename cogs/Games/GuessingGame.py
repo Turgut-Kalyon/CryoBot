@@ -1,52 +1,6 @@
-"""
-Author: Turgut Kalyon
-Description: Game module for CryoBot, providing a base class for game-related functionalities.
-"""
-from discord.ext import commands
 from random import randint
 
-
-class Game(commands.Cog):
-
-    def __init__(self, bot):
-        super().__init__()
-        self.bot = bot
-
-    async def asking_for_bet(self, ctx):
-        while True:
-            ctx.send(f"{ctx.author.mention}, bitte gib deinen Einsatz an, um das Spiel zu starten.")
-            bet = await self.bot.wait_for(
-                'message',
-                timeout=30.0,
-                check=lambda m: m.author == ctx.author and m.channel == ctx.channel
-            )
-            if bet.content.isdigit() and int(bet.content) > 0:
-                await ctx.send(f"Dein Einsatz von {bet.content} coins wurde akzeptiert. Viel Glück!")
-                return int(bet.content)
-            await ctx.send("Ungültiger Einsatz. Bitte gib eine positive Zahl ein.")
-
-
-
-    def start_game(self):
-        """
-        This method should be overridden by subclasses to implement game-specific logic.
-        """
-        raise NotImplementedError("This method should be overridden by subclasses.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+from cogs.Games.Games import Game
 
 
 class GuessingGame(Game):
@@ -55,8 +9,7 @@ class GuessingGame(Game):
     """
 
     def __init__(self, bot):
-        super().__init__()
-        self.bot = bot
+        super().__init__(bot)
 
     @commands.command(name='guess', help="!guess", description="Start a guessing game where you have to guess a number between 1 and 100.")
     async def start_game(self, ctx):
@@ -88,6 +41,7 @@ class GuessingGame(Game):
                 else:
                     await ctx.send(f"Glückwunsch {ctx.author.mention}! Du hast die Zahl {number_to_guess} erraten!")
                     break
+
 
 
             except ValueError:
