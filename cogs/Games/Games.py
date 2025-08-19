@@ -12,20 +12,21 @@ class Game(commands.Cog):
         super().__init__()
         self.bot = bot
 
-    async def asking_for_bet(self, ctx):
+    async def asking_for_bet(self, ctx, minimum_bet=10, maximum_bet=1000):
+        ctx.send(f"{ctx.author.mention}, bitte gib deinen Einsatz(minimum=10 und maximum=1000) an, um das Spiel zu starten.")
         while True:
-            ctx.send(f"{ctx.author.mention}, bitte gib deinen Einsatz an, um das Spiel zu starten.")
             bet = await self.bot.wait_for(
                 'message',
                 timeout=30.0,
                 check=lambda m: m.author == ctx.author and m.channel == ctx.channel
             )
-            if bet.content.isdigit() and int(bet.content) > 0:
+            if self.is_bet_legit(bet, maximum_bet, minimum_bet):
                 await ctx.send(f"Dein Einsatz von {bet.content} coins wurde akzeptiert. Viel Glück!")
                 return int(bet.content)
             await ctx.send("Ungültiger Einsatz. Bitte gib eine positive Zahl ein.")
 
-
+    def is_bet_legit(self, bet, maximum_bet, minimum_bet):
+        return bet.content.isdigit() and int(bet.content) > 0 and minimum_bet <= int(bet.content) <= maximum_bet
 
     def start_game(self):
         """

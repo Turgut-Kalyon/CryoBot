@@ -12,6 +12,8 @@ class GuessingGame(Game):
 
     def __init__(self, bot):
         super().__init__(bot)
+        self.minimum_bet = 10
+        self.maximum_bet = 1000
         self.coin_transfer = bot.coin_transfer
 
     @commands.command(name='guess', help="!guess", description="Start a guessing game where you have to guess a number between 1 and 100.")
@@ -34,7 +36,8 @@ class GuessingGame(Game):
                 await self.win_game(bet, ctx, number_to_guess)
                 return
             except ValueError:
-                await ctx.send("Das ist keine gültige Zahl. Bitte versuche es erneut.")
+                await ctx.send("Das ist keine gültige Zahl.")
+                continue
             except Exception as e:
                 await ctx.send(f"Ein Fehler ist aufgetreten: {e}")
         await self.lose_game(bet, ctx, number_to_guess)
