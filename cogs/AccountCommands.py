@@ -28,7 +28,7 @@ class AccountCommands(commands.Cog):
     async def balance(self, ctx):
         user_id = ctx.author.id
         balance = self.coin_storage.get(user_id)
-        if not self.has_account(balance):
+        if not self.has_account(user_id):
             await ctx.send(f"{ctx.author.mention}, Du hast noch kein Konto. "
                            "Erstelle ein Konto mit !cracc, um dein Guthaben zu überprüfen.")
             return

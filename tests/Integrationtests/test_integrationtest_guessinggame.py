@@ -18,6 +18,7 @@ class TestGuessingGameIntegration:
 
         self.cog = GuessingGame(
             bot=MagicMock(),
+            coin_storage=MagicMock(),
         )
 
     async def test_start_guessing_game(self):

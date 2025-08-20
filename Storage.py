@@ -6,12 +6,12 @@ class Storage:
     def __init__(self, main_key, source):
         self.source = source
         self.main_key = main_key
-        self.open()
         self.yaml_file = self.load()
 
     def open(self):
         with open(self.source, 'w') as f:
             pass
+
     def save(self, data: dict):
         with open(self.source, 'w', encoding="utf-8") as file:
             yaml.dump(data, file, allow_unicode=True)
@@ -37,7 +37,7 @@ class Storage:
         self.yaml_file = data_to_write
         self.save(data_to_write)
 
-    def exists(self, key) -> bool:
+    def exists(self, key):
         return key in self.yaml_file[self.main_key]
 
     def get(self, key):

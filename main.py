@@ -13,7 +13,7 @@ from cogs.DailyCoins import DailyCoins
 from cogs.CustomTextCommandCog import CustomTextCommandCog
 from ErrorHandler import ErrorHandler
 from Storage import Storage
-from cogs.Games.Games import GuessingGame
+from cogs.Games.GuessingGame import GuessingGame
 
 load_dotenv()# pragma: no cover
 cryo_bot = CryoBot()# pragma: no cover
@@ -27,17 +27,17 @@ def get_token():# pragma: no cover
 
 
 async def setup_cogs():# pragma: no cover
-    CURRENT_DIR = os.getcwd()
-    storage_coins = Storage('users', CURRENT_DIR + '/files/coins.yaml')
-    storage_daily = Storage('users', CURRENT_DIR + '/files/daily.yaml')
-    storage_commands = Storage('commands', CURRENT_DIR + '/files/commands.yaml')
+    current_directory = os.getcwd()
+    storage_coins = Storage('users', current_directory + '/files/coins.yaml')
+    storage_daily = Storage('users', current_directory + '/files/daily.yaml')
+    storage_commands = Storage('commands', current_directory + '/files/commands.yaml')
     coin_transfer = CoinTransfer(storage_coins)
 
     await cryo_bot.add_cog(CustomTextCommandCog(cryo_bot, storage_commands))
     await cryo_bot.add_cog(AccountCommands(cryo_bot, coin_transfer, storage_coins, storage_daily))
     await cryo_bot.add_cog(DailyCoins(cryo_bot, storage_daily, coin_transfer))
     await cryo_bot.add_cog(ErrorHandler(cryo_bot))
-    await cryo_bot.add_cog(GuessingGame(cryo_bot))
+    await cryo_bot.add_cog(GuessingGame(cryo_bot, storage_coins, coin_transfer))
     print("Cogs have been loaded successfully.")
 
 
