@@ -8,24 +8,36 @@ from random import randint
 
 class Game(commands.Cog):
 
-    def __init__(self, bot):
+    def __init__(self, bot, coin_storage):
         super().__init__()
         self.bot = bot
+        self.coin_storage = coin_storage
 
     async def asking_for_bet(self, ctx, minimum_bet=10, maximum_bet=1000):
+        if not self.has_account(ctx):
+            await ctx.send(f"{ctx.author.mention}, du hast kein Konto. Erstelle ein Konto mit !cracc, um das Spiel zu starten.")
+            return None
         ctx.send(f"{ctx.author.mention}, bitte gib deinen Einsatz(minimum=10 und maximum=1000) an, um das Spiel zu starten.")
-        while True:
-            bet = await self.bot.wait_for(
-                'message',
-                timeout=30.0,
-                check=lambda m: m.author == ctx.author and m.channel == ctx.channel
-            )
+        do:
+            bet = await self.get_bet(ctx)
             if self.is_bet_legit(bet, maximum_bet, minimum_bet):
                 await ctx.send(f"Dein Einsatz von {bet.content} coins wurde akzeptiert. Viel Glück!")
                 return int(bet.content)
             await ctx.send("Ungültiger Einsatz. Bitte gib eine positive Zahl ein.")
+        while not self.is_bet_legit(bet, maximum_bet, minimum_bet)
 
-    def is_bet_legit(self, bet, maximum_bet, minimum_bet):
+    async def has_account(self, ctx):
+        return self.coin_storage.exists(ctx.author.id)
+
+    async def get_bet(self, ctx):
+        return self.bot.wait_for(
+            'message',
+            timeout=30.0,
+            check=lambda m: m.author == ctx.author and m.channel == ctx.channel
+        )
+
+    @staticmethod
+    def is_bet_legit(bet, maximum_bet, minimum_bet):
         return bet.content.isdigit() and int(bet.content) > 0 and minimum_bet <= int(bet.content) <= maximum_bet
 
     def start_game(self):
@@ -55,13 +67,14 @@ class GuessingGame(Game):
     A simple guessing game where the user has to guess a number.
     """
 
-    def __init__(self, bot):
-        super().__init__()
-        self.bot = bot
+    def __init__(self, bot, coin_storage):
+        super().__init__(bot, coin_storage)
 
     @commands.command(name='guess', help="!guess", description="Start a guessing game where you have to guess a number between 1 and 100.")
     async def start_game(self, ctx):
         bet = await self.asking_for_bet(ctx)
+        if bet is None:
+            return
         await ctx.send(f"{ctx.author.mention}, ich denke an eine Zahl zwischen 1 und 100. "
                        "Versuche sie zu erraten! Du hast 30 Sekunden Zeit, um deine Antwort zu geben und nur 3 Versuche.")
         number_to_guess = randint(1, 100)

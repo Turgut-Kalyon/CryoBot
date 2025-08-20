@@ -1,7 +1,5 @@
 from random import randint
-
 from discord.ext import commands
-
 from cogs.Games.Games import Game
 
 
@@ -19,6 +17,8 @@ class GuessingGame(Game):
     @commands.command(name='guess', help="!guess", description="Start a guessing game where you have to guess a number between 1 and 100.")
     async def start_game(self, ctx):
         bet: int = await self.asking_for_bet(ctx)
+        if bet is None:
+            return
         await ctx.send(f"{ctx.author.mention}, ich denke an eine Zahl zwischen 1 und 100. "
                        "Versuche sie zu erraten! Du hast 30 Sekunden Zeit, um deine Antwort zu geben und nur 3 Versuche.")
         number_to_guess = randint(1, 100)
