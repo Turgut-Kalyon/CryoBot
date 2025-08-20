@@ -23,7 +23,8 @@ class Game(commands.Cog):
                            f"Du benötigst mindestens {minimum_bet} coins."
                            f"\n\ndein aktueller Kontostand: {self.coin_storage.get(ctx.author.id)}")
             return None
-        await ctx.send(f"{ctx.author.mention}, bitte gib deinen Einsatz(minimum=10 und maximum=1000) an, um das Spiel zu starten.")
+        await ctx.send(f"{ctx.author.mention}, bitte gib deinen Einsatz"
+                       f"(minimum={minimum_bet} und maximum={maximum_bet}) an, um das Spiel zu starten.")
         return await self.get_valid_bet(ctx, maximum_bet, minimum_bet)
 
     def does_player_have_enough_coins(self, ctx, minimum_bet):

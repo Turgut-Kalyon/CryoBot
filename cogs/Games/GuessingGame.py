@@ -10,13 +10,13 @@ class GuessingGame(Game):
 
     def __init__(self, bot, coin_storage, coin_transfer):
         super().__init__(bot, coin_storage)
-        self.minimum_bet = 10
-        self.maximum_bet = 1000
+        self.minimum_bet = 2
+        self.maximum_bet = 150
         self.coin_transfer = coin_transfer
 
     @commands.command(name='guess', help="!guess", description="Start a guessing game where you have to guess a number between 1 and 100.")
     async def start_game(self, ctx):
-        bet: int = await self.asking_for_bet(ctx)
+        bet: int = await self.asking_for_bet(ctx, self.minimum_bet, self.maximum_bet)
         if not await self.is_bet_valid(bet):
             return
         await ctx.send(f"{ctx.author.mention}, ich denke an eine Zahl zwischen 1 und 100. "
