@@ -6,6 +6,7 @@ CryoBot is a versatile Discord bot built with Python and the `discord.py` librar
 
 -   **Custom Commands**: Server administrators can dynamically add, remove, and execute simple text-based commands.
 -   **Economy System**: Users can create an account, check their balance, and earn daily coins.
+-   **Games**: Bet coins in fun games — the winner gets paid! 
 -   **Persistent Storage**: User data, custom commands, and daily reward statuses are saved in YAML files, ensuring data persistence across bot restarts.
 -   **Modular Design**: Commands are organized into Cogs (`AccountCommands`, `CustomTextCommandCog`, `DailyCoins`) for clean and scalable code.
 -   **Robust Testing**: Includes a comprehensive suite of unit and integration tests using `pytest`, integrated into a Jenkins CI/CD pipeline.
@@ -24,6 +25,7 @@ The default command prefix is `!`.
 | `!addcommand` | Adds a new custom text command. | `!addcommand <name> <response>` | Administrator |
 | `!removecommand`| Removes an existing custom command. | `!removecommand <name>` | Administrator |
 | `!execCommand` | Executes a custom command and shows its response. | `!execCommand <name>` | Everyone |
+| `!guess` | Starts the guessing game. | `!guess` | Everyone |
 
 ## Getting Started
 
