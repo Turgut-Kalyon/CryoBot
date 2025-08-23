@@ -65,8 +65,7 @@ class CustomTextCommandCog(commands.Cog, description="Custom text command handle
     @commands.command(name='execCommand',
                       description="Executes a custom command.",
                       help="!execCommand <command_name>")
-    async def exec_command(self, ctx,
-        command_name: str = commands.parameter(description=DESCR_CMD_NAME)):
+    async def exec_command(self, ctx, command_name: str = description_in_help_commandname):
             if self.has_no_parameters_given(command_name):
                 await ctx.send("Gib einen Befehlnamen ein SOFORT!!!")
                 return

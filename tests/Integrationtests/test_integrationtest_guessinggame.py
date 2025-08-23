@@ -55,7 +55,7 @@ class TestGuessingGameIntegration:
     async def test_win_game(self):
         self.cog.is_bet_valid = AsyncMock(return_value=True)
         self.cog.get_player_answer = AsyncMock(return_value=50)
-        self.cog.handle_guess = AsyncMock(return_value="")
+        self.cog.get_guess_feedback = AsyncMock(return_value="")
         self.cog.win_game = AsyncMock()
         self.cog.play_guessing_round = AsyncMock()
 
@@ -75,7 +75,7 @@ class TestGuessingGameIntegration:
     async def test_lose_game(self):
         self.cog.is_bet_valid = AsyncMock(return_value=True)
         self.cog.get_player_answer = AsyncMock(return_value=50)
-        self.cog.handle_guess = AsyncMock(return_value="Zu niedrig!")
+        self.cog.get_guess_feedback = AsyncMock(return_value="Zu niedrig!")
         self.cog.is_game_over = AsyncMock(return_value=True)
         self.cog.lose_game = AsyncMock()
         self.cog.play_guessing_round = AsyncMock()

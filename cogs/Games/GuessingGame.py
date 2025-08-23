@@ -28,9 +28,9 @@ class GuessingGame(Game):
         while not self.is_game_over(attempts):
             attempts = self.increase_attemps(attempts)
             guess = await self.get_player_answer(ctx)
-            message = await self.handle_guess(guess, number_to_guess)
-            if message:
-                await ctx.send(message)
+            feedback_for_guess = await self.get_guess_feedback(guess, number_to_guess)
+            if feedback_for_guess:
+                await ctx.send(feedback_for_guess)
                 continue
             await self.win_game(bet, ctx, number_to_guess)
             return
@@ -54,7 +54,7 @@ class GuessingGame(Game):
         self.coin_transfer.add_coins(ctx.author.id, bet)
         await ctx.send(f"Glückwunsch {ctx.author.mention}! Du hast die Zahl {number_to_guess} erraten!")
 
-    async def handle_guess(self, guess, number_to_guess) -> str:
+    async def get_guess_feedback(self, guess, number_to_guess) -> str:
         if not self.is_guess_valid(guess):
             return "Bitte gib eine Zahl zwischen 1 und 100 ein."
         if self.is_smaller(guess, number_to_guess):

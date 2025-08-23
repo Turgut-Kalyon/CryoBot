@@ -24,18 +24,18 @@ class DailyCoins(commands.Cog):
         return time(0, 0) <= now < time(0, 1)
 
     @commands.command(name='daily', help="!daily", description="Claim your daily coins.")
-    async def daily(self, ctx):
+    async def claim_daily_reward(self, ctx) -> None:
         if not self.has_account(ctx):
             await ctx.send(f"{ctx.author.mention}, Du hast noch kein Konto. "
                            "Erstelle ein Konto mit !cracc, um tägliche Coins zu erhalten.")
             return
-        if self.received_daily_reward(ctx):
+        if self.has_user_received_daily_reward(ctx):
             await ctx.send("Du hast deine täglichen Coins bereits abgeholt. "
                                 "Du kannst sie jeden Tag um 00:00 Uhr abholen.")
             return
         await self.add_daily_reward_to_user(ctx)
 
-    def received_daily_reward(self, ctx):
+    def has_user_received_daily_reward(self, ctx):
         return self.storage.get(ctx.author.id) is not None
 
     def has_account(self, ctx):

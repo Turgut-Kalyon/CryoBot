@@ -3,6 +3,7 @@ Author: Turgut Kalyon
 Description: Game module for CryoBot, providing a base class for game-related functionalities.
 """
 import asyncio
+from abc import abstractmethod
 
 from discord.ext import commands
 
@@ -39,9 +40,9 @@ class Game(commands.Cog):
             if bet.content.lower() == 'abbrechen':
                 await ctx.send("Spiel abgebrochen.")
                 return None
-            await self.handle_bet_with_responses(bet, ctx, maximum_bet, minimum_bet)
+            await self.get_feedback_for_invalid_bet(bet, ctx, maximum_bet, minimum_bet)
 
-    async def handle_bet_with_responses(self, bet, ctx, maximum_bet, minimum_bet):
+    async def get_feedback_for_invalid_bet(self, bet, ctx, maximum_bet, minimum_bet):
         if await self.is_bet_negative(bet):
             await ctx.send("Der Einsatz muss eine positive Zahl sein.")
         elif await self.is_bet_too_high(bet, maximum_bet):
@@ -91,8 +92,6 @@ class Game(commands.Cog):
                 and minimum_bet <= int(bet.content) <= maximum_bet
                 and self.coin_storage.get(bet.author.id) >= int(bet.content))
 
-    def start_game(self):
-        """
-        This method should be overridden by subclasses to implement game-specific logic.
-        """
+    @abstractmethod
+    async def start_game(self):
         raise NotImplementedError("This method should be overridden by subclasses.")
