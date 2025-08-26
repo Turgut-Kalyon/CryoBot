@@ -15,14 +15,19 @@ class Game(commands.Cog):
         self.bot = bot
         self.coin_storage = coin_storage
 
-    async def asking_for_bet(self, ctx, minimum_bet=10, maximum_bet=1000):
+    async def can_player_start_game(self, ctx, minimum_bet):
         if not await self.has_account(ctx):
             await ctx.send(f"{ctx.author.mention}, du hast kein Konto. Erstelle ein Konto mit !cracc, um das Spiel zu starten.")
-            return None
+            return False
         if self.does_player_have_enough_coins(ctx, minimum_bet):
             await ctx.send(f"{ctx.author.mention}, du hast nicht genug Coins, um das Spiel zu starten. "
                            f"Du benötigst mindestens {minimum_bet} coins."
                            f"\n\ndein aktueller Kontostand: {self.coin_storage.get(ctx.author.id)}")
+            return False
+        return True
+
+    async def asking_for_bet(self, ctx, minimum_bet=10, maximum_bet=1000):
+        if not await self.can_player_start_game(ctx):
             return None
         await ctx.send(f"{ctx.author.mention}, bitte gib deinen Einsatz"
                        f"(minimum={minimum_bet} und maximum={maximum_bet}) an, um das Spiel zu starten.")

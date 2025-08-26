@@ -23,15 +23,18 @@ class DailyCoins(commands.Cog):
     def is_new_day(now):
         return time(0, 0) <= now < time(0, 1)
 
+    async def is_daily_reward_claimable(self, ctx):
+        if not self.has_account(ctx):
+            await ctx.send(f"{ctx.author.mention}, Du hast noch kein Konto. Erstelle ein Konto mit !cracc, um tägliche Coins zu erhalten.")
+            return False    
+        if self.has_user_received_daily_reward(ctx):
+            await ctx.send("Du hast deine täglichen Coins bereits abgeholt. Du kannst sie jeden Tag um 00:00 Uhr abholen.")
+            return False
+        return True
+
     @commands.command(name='daily', help="!daily", description="Claim your daily coins.")
     async def claim_daily_reward(self, ctx) -> None:
-        if not self.has_account(ctx):
-            await ctx.send(f"{ctx.author.mention}, Du hast noch kein Konto. "
-                           "Erstelle ein Konto mit !cracc, um tägliche Coins zu erhalten.")
-            return
-        if self.has_user_received_daily_reward(ctx):
-            await ctx.send("Du hast deine täglichen Coins bereits abgeholt. "
-                                "Du kannst sie jeden Tag um 00:00 Uhr abholen.")
+        if not await self.is_daily_reward_claimable(ctx):
             return
         await self.add_daily_reward_to_user(ctx)
 
