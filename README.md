@@ -1,4 +1,6 @@
-# CryoBot
+
+<img src="https://socialify.git.ci/Turgut-Kalyon/CryoBot/image?font=JetBrains+Mono&language=1&name=1&owner=1&pattern=Transparent&theme=Dark" alt="CryoBot" width="640" height="320" />
+
 
 CryoBot is a versatile Discord bot built with Python and the `discord.py` library. It enhances server engagement through a customizable command system, a user economy, and daily rewards. Its modular architecture, based on Cogs, allows for easy expansion and maintenance.
 
