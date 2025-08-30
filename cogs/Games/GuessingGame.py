@@ -9,9 +9,7 @@ class GuessingGame(Game):
     """
 
     def __init__(self, bot, coin_storage, coin_transfer):
-        super().__init__(bot, coin_storage)
-        self.minimum_bet = 2
-        self.maximum_bet = 150
+        super().__init__(bot, coin_storage, 2, 150)
         self.coin_transfer = coin_transfer
 
     @commands.command(name='guess', help="!guess", description="Start a guessing game where you have to guess a number between 1 and 100.")
@@ -23,7 +21,7 @@ class GuessingGame(Game):
 
 
     async def preparation_for_game(self, ctx):
-        bet: int = await self.asking_for_bet(ctx, self.minimum_bet, self.maximum_bet)
+        bet: int = await self.asking_for_bet(ctx)
         if not await self.is_bet_valid(bet):
             return None
         await self.send_game_intro_message(ctx)
@@ -48,7 +46,7 @@ class GuessingGame(Game):
             await ctx.send(feedback_for_guess)
             return
         await self.win_game(bet, ctx, number_to_guess)
-        return
+        return  
 
     @staticmethod
     async def is_bet_valid(bet):
@@ -77,16 +75,7 @@ class GuessingGame(Game):
             return "Zu hoch!"
         return ""
 
-    @staticmethod
-    def is_greater(guess, number_to_guess) -> bool:
-        return guess > number_to_guess
 
-    @staticmethod
-    def is_smaller(guess, number) -> bool:
-        return guess < number
-
-    def is_guess_valid(self, guess) -> bool:
-        return self.is_smaller(guess,101) and self.is_greater(guess,0)
 
     async def get_player_answer(self, ctx) -> int:
         answer = await self.bot.wait_for(
@@ -95,10 +84,6 @@ class GuessingGame(Game):
             check=lambda m: m.author == ctx.author and m.channel == ctx.channel
         )
         return int(answer.content)
-
-    @staticmethod
-    def is_game_over(attempts: int) -> bool:
-        return attempts > 3
 
 
 
