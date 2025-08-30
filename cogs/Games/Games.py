@@ -3,75 +3,54 @@ Author: Turgut Kalyon
 Description: Game module for CryoBot, providing a base class for game-related functionalities.
 """
 import asyncio
-
+from abc import abstractmethod
 from discord.ext import commands
-
+from cogs.Games.Bet import BetFactory
+from cogs.Games.BetValidator import BetValidator
+from cogs.Games.GameValidator import GameValidator
 
 class Game(commands.Cog):
 
-    def __init__(self, bot, coin_storage):
+    def __init__(self, bot, coin_storage, minimum_bet = None, maximum_bet = None):
         super().__init__()
         self.bot = bot
+        self.bet_validator = BetValidator(minimum_bet, maximum_bet)
+        self.game_validator = GameValidator()
+        self.minimum_bet = minimum_bet
+        self.maximum_bet = maximum_bet
         self.coin_storage = coin_storage
+        self.current_bet = None
 
-    async def asking_for_bet(self, ctx, minimum_bet=10, maximum_bet=1000):
-        if not await self.has_account(ctx):
-            await ctx.send(f"{ctx.author.mention}, du hast kein Konto. Erstelle ein Konto mit !cracc, um das Spiel zu starten.")
+
+
+    async def asking_for_bet(self, ctx):
+        if not await self.can_player_start_game(ctx):
             return None
-        if self.does_player_have_enough_coins(ctx, minimum_bet):
-            await ctx.send(f"{ctx.author.mention}, du hast nicht genug Coins, um das Spiel zu starten. "
-                           f"Du benötigst mindestens {minimum_bet} coins."
-                           f"\n\ndein aktueller Kontostand: {self.coin_storage.get(ctx.author.id)}")
-            return None
-        await ctx.send(f"{ctx.author.mention}, bitte gib deinen Einsatz(minimum=10 und maximum=1000) an, um das Spiel zu starten.")
-        return await self.get_valid_bet(ctx, maximum_bet, minimum_bet)
+        await self.send_bet_request_message(ctx)
+        return await self.get_valid_bet(ctx)
 
-    def does_player_have_enough_coins(self, ctx, minimum_bet):
-        return self.coin_storage.get(ctx.author.id) < minimum_bet
 
-    async def get_valid_bet(self, ctx, maximum_bet, minimum_bet):
+    async def get_valid_bet(self, ctx):
         while True:
             bet = await self.get_bet(ctx)
-            if await self.is_bet_legit(bet, maximum_bet, minimum_bet):
-                await ctx.send(f"Dein Einsatz von {bet.content} coins wurde akzeptiert. Viel Glück!")
-                return int(bet.content)
-            if bet.content.lower() == 'abbrechen':
-                await ctx.send("Spiel abgebrochen.")
+            if await self.bet_validator.is_bet_permitted(bet):
+                self.current_bet = BetFactory.create_bet(int(bet.content), ctx.author.id)
+                await self.send_bet_request_accepted(bet, ctx)
+                return self.current_bet
+            if await self.is_quitting(bet):
+                await self.send_player_wants_to_quit_the_game(ctx)
                 return None
-            await self.handle_bet_with_responses(bet, ctx, maximum_bet, minimum_bet)
+            await self.send_bet_validation_error(ctx)
 
-    async def handle_bet_with_responses(self, bet, ctx, maximum_bet, minimum_bet):
-        if await self.is_bet_negative(bet):
-            await ctx.send("Der Einsatz muss eine positive Zahl sein.")
-        elif await self.is_bet_too_high(bet, maximum_bet):
-            await ctx.send(f"Der Einsatz darf nicht höher als {maximum_bet} sein.")
-        elif await self.is_bet_too_low(bet, minimum_bet):
-            await ctx.send(f"Der Einsatz muss mindestens {minimum_bet} coins betragen.")
-        elif await self.is_bet_affordable(bet):
-            await ctx.send(f"Du hast nicht genug Coins. "
-                           f"Dein Kontostand ist {self.coin_storage.get(bet.author.id)} coins.")
+    async def send_bet_validation_error(self, ctx):
+        if await self.bet_validator.is_bet_negative(self.current_bet):
+            await self.send_it_has_to_be_positive_number(ctx)
+        elif await self.bet_validator.is_bet_too_high(self.current_bet):
+            await self.send_bet_is_too_high(ctx)
+        elif await self.bet_validator.is_bet_too_low(self.current_bet):
+            await self.send_bet_is_too_low(ctx)
         else:
             await ctx.send("Ungültiger Einsatz.")
-
-
-
-    async def is_bet_affordable(self, bet):
-        return self.coin_storage.get(bet.author.id) >= int(bet.content)
-
-    @staticmethod
-    async def is_bet_too_low(bet, minimum_bet):
-        return bet.content.isdigit() and int(bet.content) < minimum_bet
-
-    @staticmethod
-    async def is_bet_too_high(bet, maximum_bet):
-        return bet.content.isdigit() and int(bet.content) > maximum_bet
-
-    @staticmethod
-    async def is_bet_negative(bet):
-        return bet.content.isdigit() and int(bet.content) <= 0
-
-    async def has_account(self, ctx):
-        return self.coin_storage.exists(ctx.author.id)
 
     async def get_bet(self, ctx):
         try:
@@ -84,14 +63,6 @@ class Game(commands.Cog):
             await ctx.send("Zeitüberschreitung: Du hast zu lange gebraucht, um deinen Einsatz zu nennen.")
             return None
 
-    async def is_bet_legit(self, bet, maximum_bet, minimum_bet):
-        return (bet.content.isdigit()
-                and int(bet.content) > 0
-                and minimum_bet <= int(bet.content) <= maximum_bet
-                and self.coin_storage.get(bet.author.id) >= int(bet.content))
-
-    def start_game(self):
-        """
-        This method should be overridden by subclasses to implement game-specific logic.
-        """
+    @abstractmethod
+    async def start_game(self):
         raise NotImplementedError("This method should be overridden by subclasses.")

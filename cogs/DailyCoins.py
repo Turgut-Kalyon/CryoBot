@@ -23,29 +23,40 @@ class DailyCoins(commands.Cog):
     def is_new_day(now):
         return time(0, 0) <= now < time(0, 1)
 
-    @commands.command(name='daily', help="!daily", description="Claim your daily coins.")
-    async def daily(self, ctx):
-        if not self.has_account(ctx):
-            await ctx.send(f"{ctx.author.mention}, Du hast noch kein Konto. "
-                           "Erstelle ein Konto mit !cracc, um tägliche Coins zu erhalten.")
-            return
-        if self.received_daily_reward(ctx):
-            await ctx.send("Du hast deine täglichen Coins bereits abgeholt. "
-                                "Du kannst sie jeden Tag um 00:00 Uhr abholen.")
-            return
-        await self.add_daily_reward_to_user(ctx)
-
-    def received_daily_reward(self, ctx):
+    def has_user_received_daily_reward(self, ctx):
         return self.storage.get(ctx.author.id) is not None
 
     def has_account(self, ctx):
         return self.storage.exists(ctx.author.id)
 
-    async def add_daily_reward_to_user(self, ctx):
+    def add_daily_reward_to_user(self, ctx):
         self.coin_transfer.add_coins(ctx.author.id, self.daily_coins)
+        self.mark_daily_rewards_as_claimed(ctx)
+
+    def mark_daily_rewards_as_claimed(self, ctx):
         current_time = datetime.now().time().strftime("%H:%M:%S")
         self.storage.set(ctx.author.id, current_time)
+
+    async def send_no_account_message(self, ctx):
+        await ctx.send(f"{ctx.author.mention}, Du hast noch kein Konto. Erstelle ein Konto mit !cracc, um tägliche Coins zu erhalten.")
+
+    async def send_already_claimed_message(self, ctx):
+        await ctx.send("Du hast deine täglichen Coins bereits abgeholt. Du kannst sie jeden Tag um 00:00 Uhr abholen.")
+
+    async def send_reward_claimed_message(self, ctx):
         await ctx.send(f"{ctx.author.mention} hat {self.daily_coins} coins bekommen.")
+
+
+    @commands.command(name='daily', help="!daily", description="Claim your daily coins.")
+    async def claim_daily_reward(self, ctx):
+        if not self.has_account(ctx):
+            await self.send_no_account_message(ctx)
+            return
+        if self.has_user_received_daily_reward(ctx):
+            await self.send_already_claimed_message(ctx)
+            return
+        self.add_daily_reward_to_user(ctx)
+        await self.send_reward_claimed_message(ctx)
 
     @property
     def qualified_name(self):# pragma: no cover

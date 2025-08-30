@@ -15,7 +15,6 @@ class AccountCommands(commands.Cog):
         self.coin_transfer = coin_transfer
         self.coin_storage = coin_storage
         self.daily_storage = daily_storage
-
         self.quotes = [
             "Keep your coins close, but your friends closer.",
             "Coins are like friends, the more you have, the better.",
@@ -25,12 +24,11 @@ class AccountCommands(commands.Cog):
         ]
 
     @commands.command(name='balance', help="!balance", description="Check your coin balance.")
-    async def balance(self, ctx):
+    async def send_balance(self, ctx):
         user_id = ctx.author.id
         balance = self.coin_storage.get(user_id)
         if not self.has_account(user_id):
-            await ctx.send(f"{ctx.author.mention}, Du hast noch kein Konto. "
-                           "Erstelle ein Konto mit !cracc, um dein Guthaben zu überprüfen.")
+            await ctx.send(f"{ctx.author.mention}, Du hast noch kein Konto. Erstelle ein Konto mit !cracc, um dein Guthaben zu überprüfen.")
             return
         await ctx.send(f"{ctx.author.mention}, Du besitzt aktuell {balance} coins.")
 
@@ -50,7 +48,7 @@ class AccountCommands(commands.Cog):
         return ctx.author.bot
 
     @commands.command(name='cracc', help="!cracc", description="create an account for daily rewards and fun games.")
-    async def cracc(self, ctx):
+    async def create_account(self, ctx):
         user_id = ctx.author.id
         if self.has_account(user_id):
             await ctx.send(f"{ctx.author.mention}, Du hast bereits ein Konto.")

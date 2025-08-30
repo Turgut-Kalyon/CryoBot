@@ -6,61 +6,54 @@ class Storage:
     def __init__(self, main_key, source):
         self.source = source
         self.main_key = main_key
-        self.yaml_file = self.load()
+        self.yaml_file = self.load_yaml_file()
 
-    def open(self):
-        with open(self.source, 'w') as f:
-            pass
-
-    def save(self, data: dict):
+    def save(self) -> None:
         with open(self.source, 'w', encoding="utf-8") as file:
-            yaml.dump(data, file, allow_unicode=True)
-        self.yaml_file = data
+            yaml.dump(self.yaml_file, file, allow_unicode=True)
 
-    def load(self) -> dict:
-        with open(self.source, 'r', encoding='utf-8') as f:
-            data = yaml.safe_load(f) or {}
-        self.yaml_file = self.get_data(data)
-        return self.yaml_file
+    def _fetch_file_content(self) -> dict:
+        if not os.path.exists(self.source):
+            return {}
+        try:
+            with open(self.source, 'r', encoding='utf-8') as f:
+                return yaml.safe_load(f) or {}
+        except yaml.YAMLError as e:
+            print(f"Error reading {self.source}: {e}")
+            return {}
 
-    def get_data(self, data):
-        return data if self.main_key in data else {self.main_key: {}}
+    def load_yaml_file(self) -> dict:
+        data = self._fetch_file_content()
+        data.setdefault(self.main_key, {})
+        return data
 
-    def delete(self, key):
-        if key not in self.yaml_file[self.main_key]:
-            return
-        del self.yaml_file[self.main_key][key]
-        self.save(self.yaml_file)
+    def delete(self, key) -> None:
+        if self.exists(key):
+            del self.yaml_file[self.main_key][key]
+            self.save()
 
-    def clear(self):
-        data_to_write = {f"{self.main_key}": {}}
-        self.yaml_file = data_to_write
-        self.save(data_to_write)
+    def clear(self) -> None:
+        self.yaml_file = {f"{self.main_key}": {}}
+        self.save()
 
-    def exists(self, key):
+    def exists(self, key) -> bool:
         return key in self.yaml_file[self.main_key]
 
-    def get(self, key):
+    def get(self, key) -> dict:
         return self.yaml_file[self.main_key].get(key, None)
 
-    def set(self, key, value):
+    def set(self, key, value) -> None:
         self.yaml_file[self.main_key][key] = value
-        self.save(self.yaml_file)
+        self.save()
 
-    def adjust(self, key, value):
-        if not self.exists(key):
-            return
-        if self.is_result_getting_negative(key, value):
-            self.set(key, 0)
-            return
-        value_before = self.yaml_file[self.main_key][key]
-        self.set(key, value_before + value)
+    def adjust(self, key: str, delta: int) -> None:
+        if self.exists(key):
+            current_value = self.yaml_file[self.main_key][key]
+            new_value = max(0, current_value + delta)
+            self.yaml_file[self.main_key][key] = new_value
+            self.save()
 
-
-    def is_result_getting_negative(self, key, value):
-        return self.yaml_file[self.main_key][key] + value <= 0
-
-    def set_all(self, value):
-        for key in self.yaml_file[self.main_key]:
-            self.yaml_file[self.main_key][key] = value
-        self.save(self.yaml_file)
+    def set_all(self, value) -> None:
+        keys = self.yaml_file[self.main_key].keys()
+        self.yaml_file[self.main_key] = dict.fromkeys(keys, value)
+        self.save()
