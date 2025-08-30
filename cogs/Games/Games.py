@@ -4,10 +4,11 @@ Description: Game module for CryoBot, providing a base class for game-related fu
 """
 import asyncio
 from abc import abstractmethod
-
 from discord.ext import commands
 
-
+#TODO minimum_bet and maximum_bet should be members of the class Game
+# and set in the constructor of the subclasses.
+# This would make the code cleaner and avoid passing them around in methods.
 class Game(commands.Cog):
 
     def __init__(self, bot, coin_storage):
@@ -113,16 +114,6 @@ class Game(commands.Cog):
         except asyncio.TimeoutError:
             await ctx.send("Zeitüberschreitung: Du hast zu lange gebraucht, um deinen Einsatz zu nennen.")
             return None
-
-    def is_valid_bet_amount(self, bet, min_bet, max_bet):
-        if not bet.isdigit():
-            return False
-        bet = int(bet)
-        return min_bet <= bet <= max_bet > 0
-
-    async def is_bet_legit(self, bet, maximum_bet, minimum_bet):
-        return (self.is_valid_bet_amount(bet, minimum_bet, maximum_bet)
-                and await self.is_bet_affordable(bet))
 
     @abstractmethod
     async def start_game(self):
