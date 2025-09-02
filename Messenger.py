@@ -1,6 +1,8 @@
 
 
-class Messanger:
+
+# TODO: add bet validatior for Messenger
+class Messenger:
 
 
     async def send_bet_is_too_low(self, ctx, minimum_bet):
@@ -30,3 +32,14 @@ class Messanger:
         await ctx.send(f"{ctx.author.mention}, du hast nicht genug Coins, um das Spiel zu starten. "
                        f"Du benötigst mindestens {minimum_bet} coins."
                        f"\n\ndein aktueller Kontostand: {self.coin_storage.get(ctx.author.id)}")
+        
+
+    async def send_bet_validation_error(self, ctx):
+        if await self.bet_validator.is_bet_negative(self.current_bet):
+            await self.send_it_has_to_be_positive_number(ctx)
+        elif await self.bet_validator.is_bet_too_high(self.current_bet):
+            await self.send_bet_is_too_high(ctx)
+        elif await self.bet_validator.is_bet_too_low(self.current_bet):
+            await self.send_bet_is_too_low(ctx)
+        else:
+            await ctx.send("Ungültiger Einsatz.")

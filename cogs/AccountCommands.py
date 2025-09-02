@@ -32,9 +32,6 @@ class AccountCommands(commands.Cog):
             return
         await ctx.send(f"{ctx.author.mention}, Du besitzt aktuell {balance} coins.")
 
-    def has_account(self, user_id):
-        return self.coin_storage.exists(user_id)
-
     @commands.command(name='hello', help="!hello", description="Sends a greeting message.")
     async def hello(self, ctx):# pragma: no cover
         if self.has_bot_written_the_message(ctx):
@@ -56,8 +53,7 @@ class AccountCommands(commands.Cog):
         await self.init_account(ctx, user_id)
 
     async def init_account(self, ctx, user_id):
-        starting_coins = self.coin_transfer.get_starting_coins()
-        self.coin_storage.set(user_id, starting_coins)
+        self.coin_storage.set(user_id, 10.0)
         self.daily_storage.set(user_id, None)
         await ctx.send(f"{ctx.author.mention}, Dein Konto wurde erfolgreich erstellt!")
 

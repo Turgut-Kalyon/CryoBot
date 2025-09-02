@@ -5,7 +5,7 @@ Description: Game module for CryoBot, providing a base class for game-related fu
 import asyncio
 from abc import abstractmethod
 from discord.ext import commands
-from cogs.Games.Bet import BetFactory
+from cogs.Games.BetFactory import BetFactory
 from cogs.Games.BetValidator import BetValidator
 from cogs.Games.GameValidator import GameValidator
 
@@ -21,8 +21,6 @@ class Game(commands.Cog):
         self.coin_storage = coin_storage
         self.current_bet = None
 
-
-
     async def asking_for_bet(self, ctx):
         if not await self.can_player_start_game(ctx):
             return None
@@ -35,22 +33,9 @@ class Game(commands.Cog):
             bet = await self.get_bet(ctx)
             if await self.bet_validator.is_bet_permitted(bet):
                 self.current_bet = BetFactory.create_bet(int(bet.content), ctx.author.id)
-                await self.send_bet_request_accepted(bet, ctx)
                 return self.current_bet
             if await self.is_quitting(bet):
-                await self.send_player_wants_to_quit_the_game(ctx)
                 return None
-            await self.send_bet_validation_error(ctx)
-
-    async def send_bet_validation_error(self, ctx):
-        if await self.bet_validator.is_bet_negative(self.current_bet):
-            await self.send_it_has_to_be_positive_number(ctx)
-        elif await self.bet_validator.is_bet_too_high(self.current_bet):
-            await self.send_bet_is_too_high(ctx)
-        elif await self.bet_validator.is_bet_too_low(self.current_bet):
-            await self.send_bet_is_too_low(ctx)
-        else:
-            await ctx.send("Ungültiger Einsatz.")
 
     async def get_bet(self, ctx):
         try:

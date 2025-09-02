@@ -8,7 +8,6 @@ class BetValidator(Validator):
     def is_bet_amount_in_range(self, bet: Bet) -> bool:
         return self.minimum_bet <= bet.amount <= self.maximum_bet
 
-
     def is_bet_permitted(self, bet: Bet) -> bool:
         return (self.is_bet_amount_in_range(bet)
                 and self.is_bet_within_budget(bet))

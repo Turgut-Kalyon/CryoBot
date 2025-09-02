@@ -23,12 +23,6 @@ class DailyCoins(commands.Cog):
     def is_new_day(now):
         return time(0, 0) <= now < time(0, 1)
 
-    def has_user_received_daily_reward(self, ctx):
-        return self.storage.get(ctx.author.id) is not None
-
-    def has_account(self, ctx):
-        return self.storage.exists(ctx.author.id)
-
     def add_daily_reward_to_user(self, ctx):
         self.coin_transfer.add_coins(ctx.author.id, self.daily_coins)
         self.mark_daily_rewards_as_claimed(ctx)
