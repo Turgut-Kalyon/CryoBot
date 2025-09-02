@@ -5,16 +5,16 @@ It's managing the coins of users, allowing them to check their balance, and prov
 """
 from discord.ext import commands
 import random
-from CurrencySystem.CoinTransfer import CoinTransfer
-from Storage import Storage
+from account.Account import Account
+from account.AccountService import AccountService
+from account.AccountValidator import AccountValidator
 
 
 class AccountCommands(commands.Cog):
-    def __init__(self, bot, coin_transfer: CoinTransfer, coin_storage: Storage, daily_storage: Storage):
+    def __init__(self, bot, account_service : AccountService):
         self.bot = bot
-        self.coin_transfer = coin_transfer
-        self.coin_storage = coin_storage
-        self.daily_storage = daily_storage
+        self.account_service = account_service
+        self.account_validator = AccountValidator(self.account_service.get_all_accounts())
         self.quotes = [
             "Keep your coins close, but your friends closer.",
             "Coins are like friends, the more you have, the better.",
@@ -26,19 +26,8 @@ class AccountCommands(commands.Cog):
     @commands.command(name='balance', help="!balance", description="Check your coin balance.")
     async def send_balance(self, ctx):
         user_id = ctx.author.id
-        balance = self.coin_storage.get(user_id)
-        if not self.has_account(user_id):
-            await ctx.send(f"{ctx.author.mention}, Du hast noch kein Konto. Erstelle ein Konto mit !cracc, um dein Guthaben zu überprüfen.")
-            return
+        balance = self.account_service.get_account(user_id).balance
         await ctx.send(f"{ctx.author.mention}, Du besitzt aktuell {balance} coins.")
-
-    @commands.command(name='hello', help="!hello", description="Sends a greeting message.")
-    async def hello(self, ctx):# pragma: no cover
-        if self.has_bot_written_the_message(ctx):
-            return
-        await ctx.send(f'Hallo {ctx.author.mention}!\n'
-                       f'Hier ist dein persönliches Zitat:\n'
-                       f'*"{self.get_random_quote()}"*')
 
     @staticmethod
     def has_bot_written_the_message(ctx):# pragma: no cover
@@ -47,18 +36,15 @@ class AccountCommands(commands.Cog):
     @commands.command(name='cracc', help="!cracc", description="create an account for daily rewards and fun games.")
     async def create_account(self, ctx):
         user_id = ctx.author.id
-        if self.has_account(user_id):
+        if self.account_validator.has_account(user_id):
             await ctx.send(f"{ctx.author.mention}, Du hast bereits ein Konto.")
             return
         await self.init_account(ctx, user_id)
 
     async def init_account(self, ctx, user_id):
-        self.coin_storage.set(user_id, 10.0)
-        self.daily_storage.set(user_id, None)
+        account = Account(user_id)
+        self.account_service.create_account(user_id)
         await ctx.send(f"{ctx.author.mention}, Dein Konto wurde erfolgreich erstellt!")
-
-    def get_random_quote(self):# pragma: no cover
-        return random.choice(self.quotes)
 
     @property
     def qualified_name(self):# pragma: no cover

@@ -30,14 +30,14 @@ class Game(commands.Cog):
 
     async def get_valid_bet(self, ctx):
         while True:
-            bet = await self.get_bet(ctx)
+            bet = await self.wait_for_bet_message(ctx)
             if await self.bet_validator.is_bet_permitted(bet):
                 self.current_bet = BetFactory.create_bet(int(bet.content), ctx.author.id)
                 return self.current_bet
             if await self.is_quitting(bet):
                 return None
 
-    async def get_bet(self, ctx):
+    async def wait_for_bet_message(self, ctx):
         try:
             return await self.bot.wait_for(
                 'message',
