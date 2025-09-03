@@ -35,7 +35,8 @@ class Game(commands.Cog):
             if await self.bet_validator.is_bet_permitted(bet):
                 self.current_bet = BetFactory.create_bet(int(bet.content), ctx.author.id)
                 return self.current_bet
-            if await self.is_quitting(bet):
+            if await self.game_validator.is_quitting(bet):
+                await self.game_messenger.send_quit_game_message()
                 return None
 
     async def wait_for_bet_message(self, ctx):
@@ -46,7 +47,7 @@ class Game(commands.Cog):
                 check=lambda m: m.author == ctx.author and m.channel == ctx.channel
             )
         except asyncio.TimeoutError:
-            await ctx.send("Zeitüberschreitung: Du hast zu lange gebraucht, um deinen Einsatz zu nennen.")
+            await self.game_messenger.send_bet_timeout()
             return None
 
     @abstractmethod

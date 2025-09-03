@@ -56,6 +56,7 @@ class GuessingGame(Game):
     def increase_attempts(attempts: int) -> int:
         return attempts + 1
 
+
     async def win_game(self, bet, ctx, number_to_guess) -> None:
         bet *= 1.3
         self.coin_transfer.add_coins(ctx.author.id, bet)

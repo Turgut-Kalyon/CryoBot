@@ -31,3 +31,9 @@ class GameMessenger:
 
     async def send_bet_is_too_high(self):
         await self.channel.send(f"Der Einsatz darf nicht höher als {self.maximum_bet} sein.")
+
+    async def send_bet_timeout(self):
+        await self.channel.send("Zeitüberschreitung: Du hast zu lange gebraucht, um deinen Einsatz zu nennen.")
+
+    async def send_quit_game_message(self):
+        await self.channel.send("Das Spiel wurde beendet.")
