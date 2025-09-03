@@ -4,6 +4,8 @@ from Storage import Storage
 class AccountRepository:
     def __init__(self, storage: Storage):
         self.storage = storage
+        self.accounts = self.load_all()
+
 
     def save(self, account: Account) -> None:
         data = {
@@ -13,6 +15,7 @@ class AccountRepository:
             "games_total": account.games_total,
             "daily_claimed": account.has_claimed_daily
         }
+        self.accounts[account.id] = account
         self.storage.set(str(account.id), data)
 
     def load_account(self, user_id: int) -> Account:
@@ -40,3 +43,9 @@ class AccountRepository:
     def save_all(self, accounts: list[Account]) -> None:
         for acc in accounts:
             self.save(acc)
+
+    
+
+    @property
+    def accounts(self) -> list[Account]:
+        return list(self.accounts.values())

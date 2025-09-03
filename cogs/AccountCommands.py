@@ -5,6 +5,7 @@ It's managing the coins of users, allowing them to check their balance, and prov
 """
 from discord.ext import commands
 import random
+from Messenger.Account_Messenger import AccountMessenger
 from account.Account import Account
 from account.AccountService import AccountService
 from account.AccountValidator import AccountValidator
@@ -15,19 +16,13 @@ class AccountCommands(commands.Cog):
         self.bot = bot
         self.account_service = account_service
         self.account_validator = AccountValidator(self.account_service.get_all_accounts())
-        self.quotes = [
-            "Keep your coins close, but your friends closer.",
-            "Coins are like friends, the more you have, the better.",
-            "A coin saved is a coin earned.",
-            "Invest in yourself, it's the best return on investment.",
-            "Coins may come and go, but memories last forever."
-        ]
+        self.account_messenger = AccountMessenger(self.bot.channel)
 
     @commands.command(name='balance', help="!balance", description="Check your coin balance.")
     async def send_balance(self, ctx):
         user_id = ctx.author.id
         balance = self.account_service.get_account(user_id).balance
-        await ctx.send(f"{ctx.author.mention}, Du besitzt aktuell {balance} coins.")
+        await self.account_messenger.send_balance_message(ctx.author, balance)
 
     @staticmethod
     def has_bot_written_the_message(ctx):# pragma: no cover
@@ -37,14 +32,14 @@ class AccountCommands(commands.Cog):
     async def create_account(self, ctx):
         user_id = ctx.author.id
         if self.account_validator.has_account(user_id):
-            await ctx.send(f"{ctx.author.mention}, Du hast bereits ein Konto.")
+            await self.account_messenger.send_already_has_account_message(ctx.author)
             return
         await self.init_account(ctx, user_id)
 
     async def init_account(self, ctx, user_id):
         account = Account(user_id)
         self.account_service.create_account(user_id)
-        await ctx.send(f"{ctx.author.mention}, Dein Konto wurde erfolgreich erstellt!")
+        await self.account_messenger.send_account_created_message(ctx.author)
 
     @property
     def qualified_name(self):# pragma: no cover

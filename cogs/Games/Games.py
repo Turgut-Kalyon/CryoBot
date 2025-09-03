@@ -5,26 +5,27 @@ Description: Game module for CryoBot, providing a base class for game-related fu
 import asyncio
 from abc import abstractmethod
 from discord.ext import commands
+from Messenger.Game_Messenger import GameMessenger
 from cogs.Games.BetFactory import BetFactory
 from cogs.Games.BetValidator import BetValidator
 from cogs.Games.GameValidator import GameValidator
 
 class Game(commands.Cog):
 
-    def __init__(self, bot, coin_storage, minimum_bet = None, maximum_bet = None):
+    def __init__(self, bot, minimum_bet = None, maximum_bet = None):
         super().__init__()
         self.bot = bot
         self.bet_validator = BetValidator(minimum_bet, maximum_bet)
         self.game_validator = GameValidator()
         self.minimum_bet = minimum_bet
         self.maximum_bet = maximum_bet
-        self.coin_storage = coin_storage
         self.current_bet = None
+        self.game_messenger = GameMessenger(bot.channel, self.minimum_bet, self.maximum_bet, self.bet_validator)
 
     async def asking_for_bet(self, ctx):
         if not await self.can_player_start_game(ctx):
             return None
-        await self.send_bet_request_message(ctx)
+        await self.game_messenger.send_bet_request_message(ctx, self.maximum_bet, self.minimum_bet)
         return await self.get_valid_bet(ctx)
 
 

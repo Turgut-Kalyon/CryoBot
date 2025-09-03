@@ -1,6 +1,7 @@
 from random import randint
 from discord.ext import commands
 from cogs.Games.Games import Game
+from Messenger.GuessingGame_Messenger import GuessingGameMessenger  # Add this import if GuessingGameMessenger is defined in this module
 
 
 class GuessingGame(Game):
@@ -8,9 +9,9 @@ class GuessingGame(Game):
     A simple guessing game where the user has to guess a number.
     """
 
-    def __init__(self, bot, coin_storage, coin_transfer):
-        super().__init__(bot, coin_storage, 2, 150)
-        self.coin_transfer = coin_transfer
+    def __init__(self, bot):
+        super().__init__(bot, 2, 150)
+        self.messenger = GuessingGameMessenger(bot.channel, self.bet_validator)
 
     @commands.command(name='guess', help="!guess", description="Start a guessing game where you have to guess a number between 1 and 100.")
     async def start_game(self, ctx):
@@ -24,14 +25,11 @@ class GuessingGame(Game):
         bet: int = await self.asking_for_bet(ctx)
         if not await self.is_bet_valid(bet):
             return None
-        await self.send_game_intro_message(ctx)
+        await self.messenger.send_game_intro_message(ctx)
         number_to_guess = randint(1, 100)
         return bet, number_to_guess
 
-    @staticmethod
-    async def send_game_intro_message(ctx):
-        await ctx.send(f"{ctx.author.mention}, ich denke an eine Zahl zwischen 1 und 100. "
-                       "Versuche sie zu erraten! Du hast 30 Sekunden Zeit, um deine Antwort zu geben und nur 3 Versuche.")
+
 
     async def play_guessing_round(self, bet, ctx, number_to_guess, attempts):
         while not self.is_game_over(attempts):
@@ -41,39 +39,27 @@ class GuessingGame(Game):
 
     async def process_guessing_attempt(self, bet, ctx, number_to_guess):
         guess = await self.get_player_answer(ctx)
-        feedback_for_guess = await self.get_guess_feedback(guess, number_to_guess)
-        if feedback_for_guess:
-            await ctx.send(feedback_for_guess)
-            return
-        await self.win_game(bet, ctx, number_to_guess)
-        return  
+        await self.messenger.send_invalid_guess_message(guess, number_to_guess)
+        if guess == number_to_guess:
+            await self.win_game(bet, ctx, number_to_guess)
+        return
 
     @staticmethod
     async def is_bet_valid(bet):
         return bet is not None
 
     async def lose_game(self, bet, ctx, number_to_guess):
-        await ctx.send(f"Du hast deine 3 Versuche aufgebraucht! Die Zahl war {number_to_guess}.")
-        self.coin_transfer.remove_coins(ctx.author.id, bet)
+        await self.messenger.send_three_attempts_over_message(number_to_guess)
+
 
     @staticmethod
-    def increase_attemps(attempts: int) -> int:
+    def increase_attempts(attempts: int) -> int:
         return attempts + 1
 
     async def win_game(self, bet, ctx, number_to_guess) -> None:
         bet *= 1.3
-        await ctx.send(f"Du hast {bet} coins gewonnen!")
         self.coin_transfer.add_coins(ctx.author.id, bet)
-        await ctx.send(f"Glückwunsch {ctx.author.mention}! Du hast die Zahl {number_to_guess} erraten!")
-
-    async def get_guess_feedback(self, guess, number_to_guess) -> str:
-        if not self.is_guess_valid(guess):
-            return "Bitte gib eine Zahl zwischen 1 und 100 ein."
-        if self.is_smaller(guess, number_to_guess):
-            return "Zu niedrig!"
-        if self.is_greater(guess, number_to_guess):
-            return "Zu hoch!"
-        return ""
+        await self.messenger.send_win_game_message(bet, ctx.author.mention, number_to_guess)
 
 
 
