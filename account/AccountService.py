@@ -31,4 +31,13 @@ class AccountService:
             account.reset_daily_claim()
         self.repository.save_all(accounts)
 
-    
+
+    def lose_game(self, user_id: int, amount: float) -> None:
+        account = self.get_account(user_id)
+        account.lose_game(amount)
+        self.save_account(account)
+
+    def win_game(self, user_id: int, amount: float) -> None:
+        account = self.get_account(user_id)
+        account.win_game(amount)
+        self.save_account(account)
