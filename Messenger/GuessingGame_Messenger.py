@@ -12,7 +12,8 @@ class GuessingGameMessenger:
     async def send_game_intro_message(self, ctx):
         await self.channel.send(f"{ctx.author.mention}, ich denke an eine Zahl zwischen 1 und 100. "
                                 "Versuche sie zu erraten! Du hast 30 Sekunden Zeit, um deine Antwort zu geben und nur 3 Versuche.")
-        
+
+    # TODO: Implementiere die Methode 
     async def send_invalid_guess_message(self, guess, number_to_guess):
         if not self.bet_validator:
             await self.channel.send("Bitte gib eine Zahl zwischen 1 und 100 ein.")
