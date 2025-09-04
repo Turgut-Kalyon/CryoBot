@@ -31,13 +31,11 @@ def get_token():# pragma: no cover
 async def setup_cogs():# pragma: no cover
     current_directory = os.getcwd()
     storage = Storage(os.path.join(current_directory, 'account_data.yaml'), 'accounts')
-    coin_transfer = CoinTransfer(storage)
     account_repository = AccountRepository(storage)
     account_service = AccountService(account_repository)
 
 
 
-    #await cryo_bot.add_cog(CustomTextCommandCog(cryo_bot, storage_commands))
     await cryo_bot.add_cog(AccountCommands(cryo_bot, account_service))
     await cryo_bot.add_cog(DailyCoins(cryo_bot, account_service))
     await cryo_bot.add_cog(ErrorHandler(cryo_bot))
