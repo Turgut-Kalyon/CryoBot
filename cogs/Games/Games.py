@@ -30,7 +30,7 @@ class Game(commands.Cog):
     
 
     async def asking_for_bet(self, ctx):
-        if not await self.can_player_start_game(ctx):
+        if not await self.game_validator.is_player_eligible_to_play(ctx):
             return None
         await self.game_messenger.send_bet_request_message(ctx, self.maximum_bet, self.minimum_bet)
         return await self.get_valid_bet(ctx)

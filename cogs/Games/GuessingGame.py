@@ -12,7 +12,7 @@ class GuessingGame(Game):
 
     def __init__(self, bot, account_service: AccountService):
         super().__init__(bot, account_service, 2, 150)
-        self.messenger = GuessingGameMessenger(bot.channel, self.bet_validator)
+        self.messenger = GuessingGameMessenger(self.bet_validator)
         self.number_to_guess: int = None
         self.is_game_won: bool = False
 

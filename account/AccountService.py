@@ -41,3 +41,6 @@ class AccountService:
         account = self.get_account(user_id)
         account.win_game(amount)
         self.save_account(account)
+
+    def account_exists(self, user_id: int) -> bool:
+        return any(acc.id == user_id for acc in self.get_all_accounts())

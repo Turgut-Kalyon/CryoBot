@@ -1,7 +1,6 @@
 from datetime import datetime, time
 from discord.ext import commands, tasks
 from Messenger.DailyCoins_Messenger import DailyCoinsMessenger
-from account import AccountValidator
 from account.AccountService import AccountService
 
 class DailyCoins(commands.Cog):
@@ -9,7 +8,6 @@ class DailyCoins(commands.Cog):
         self.bot = bot
         self.daily_coins = 10
         self.account_service = account_service
-        self.account_validator = AccountValidator(self.account_service.get_all_accounts())
         self.daily_coins_messenger = DailyCoinsMessenger()
 
     def cog_unload(self):# pragma: no cover

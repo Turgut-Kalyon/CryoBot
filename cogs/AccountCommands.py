@@ -8,15 +8,13 @@ import random
 from Messenger.Account_Messenger import AccountMessenger
 from account.Account import Account
 from account.AccountService import AccountService
-from account.AccountValidator import AccountValidator
 
 
 class AccountCommands(commands.Cog):
     def __init__(self, bot, account_service : AccountService):
         self.bot = bot
         self.account_service = account_service
-        self.account_validator = AccountValidator(self.account_service.get_all_accounts())
-        self.account_messenger = AccountMessenger(self.bot.channel)
+        self.account_messenger = AccountMessenger()
 
     @commands.command(name='balance', help="!balance", description="Check your coin balance.")
     async def send_balance(self, ctx):
@@ -31,8 +29,8 @@ class AccountCommands(commands.Cog):
     @commands.command(name='cracc', help="!cracc", description="create an account for daily rewards and fun games.")
     async def create_account(self, ctx):
         user_id = ctx.author.id
-        if self.account_validator.has_account(user_id):
-            await self.account_messenger.send_already_has_account_message(ctx.author)
+        if self.account_service.account_exists(user_id):
+            await self.account_messenger.send_account_exists_message(ctx.author)
             return
         await self.init_account(ctx, user_id)
 

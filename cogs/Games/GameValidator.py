@@ -17,11 +17,12 @@ class GameValidator(Validator):
         return guess < 101 and guess > 0
 
     def has_account(self, ctx):
-        return self.coin_storage.exists(ctx.author.id)
-    
+        return self.account_service.account_exists(ctx.author.id)
+
     def has_enough_coins(self, ctx):
-        return self.coin_storage.get(ctx.author.id) >= self.minimum_bet
-    
+        account = self.account_service.get_account(ctx.author.id)
+        return account.coins >= self.minimum_bet
+
     async def is_player_eligible_to_play(self, ctx):
         if not self.has_account(ctx):
             await self.account_messenger.send_no_account_message(ctx)
