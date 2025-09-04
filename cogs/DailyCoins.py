@@ -1,8 +1,6 @@
 from datetime import datetime, time
 from discord.ext import commands, tasks
-from CurrencySystem.CoinTransfer import CoinTransfer
 from Messenger.DailyCoins_Messenger import DailyCoinsMessenger
-from Storage import Storage
 from account import AccountValidator
 from account.AccountService import AccountService
 

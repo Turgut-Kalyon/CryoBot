@@ -1,11 +1,14 @@
-from cogs.Games.Games import Validator
+from Messenger.Account_Messenger import AccountMessenger
+from account import AccountService
+from cogs.Games.Validator import Validator
 
 
 class GameValidator(Validator):
 
-    def __init__(self, coin_storage, minimum_bet, maximum_bet):
-        super().__init__(coin_storage, minimum_bet, maximum_bet)
-    
+    def __init__(self, account_service: AccountService, minimum_bet, maximum_bet):
+        super().__init__(account_service, minimum_bet, maximum_bet)
+        self.account_messenger = AccountMessenger()
+
     @staticmethod
     def is_game_over(attempts: int) -> bool:
         return attempts > 3
@@ -21,10 +24,10 @@ class GameValidator(Validator):
     
     async def is_player_eligible_to_play(self, ctx):
         if not self.has_account(ctx):
-            await self.send_no_account_message(ctx)
+            await self.account_messenger.send_no_account_message(ctx)
             return False
         if not self.has_enough_coins(ctx):
-            await self.send_can_not_afford_message(ctx)
+            await self.account_messenger.send_can_not_afford_message(ctx, self.minimum_bet)
             return False
         return True
     

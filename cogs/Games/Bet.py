@@ -6,7 +6,7 @@
 class Bet:
     def __init__(self, amount: int, author_id: int):
         self.author_id = author_id
-        self.amount = amount
+        self.m_amount = amount
 
 
     @property
@@ -15,4 +15,4 @@ class Bet:
 
     @property
     def amount(self):
-        return self.amount
+        return self.m_amount

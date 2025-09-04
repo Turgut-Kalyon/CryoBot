@@ -6,6 +6,8 @@ This script initializes the CryoBot, loads environment variables, and sets up co
 import asyncio
 import os
 from dotenv import load_dotenv
+from account.AccountRepository import AccountRepository
+from account.AccountService import AccountService
 from cogs.AccountCommands import AccountCommands
 from CryoBot import CryoBot
 from CurrencySystem.CoinTransfer import CoinTransfer
@@ -28,16 +30,18 @@ def get_token():# pragma: no cover
 
 async def setup_cogs():# pragma: no cover
     current_directory = os.getcwd()
-    storage_coins = Storage('users', current_directory + '/files/coins.yaml')
-    storage_daily = Storage('users', current_directory + '/files/daily.yaml')
-    storage_commands = Storage('commands', current_directory + '/files/commands.yaml')
-    coin_transfer = CoinTransfer(storage_coins)
+    storage = Storage(os.path.join(current_directory, 'account_data.yaml'), 'accounts')
+    coin_transfer = CoinTransfer(storage)
+    account_repository = AccountRepository(storage)
+    account_service = AccountService(account_repository)
 
-    await cryo_bot.add_cog(CustomTextCommandCog(cryo_bot, storage_commands))
-    await cryo_bot.add_cog(AccountCommands(cryo_bot, coin_transfer, storage_coins, storage_daily))
-    await cryo_bot.add_cog(DailyCoins(cryo_bot, storage_daily, coin_transfer))
+
+
+    #await cryo_bot.add_cog(CustomTextCommandCog(cryo_bot, storage_commands))
+    await cryo_bot.add_cog(AccountCommands(cryo_bot, account_service))
+    await cryo_bot.add_cog(DailyCoins(cryo_bot, account_service))
     await cryo_bot.add_cog(ErrorHandler(cryo_bot))
-    await cryo_bot.add_cog(GuessingGame(cryo_bot, storage_coins, coin_transfer))
+    await cryo_bot.add_cog(GuessingGame(cryo_bot, account_service))
     print("Cogs have been loaded successfully.")
 
 

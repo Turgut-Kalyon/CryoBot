@@ -6,23 +6,28 @@ import asyncio
 from abc import abstractmethod
 from discord.ext import commands
 from Messenger.Game_Messenger import GameMessenger
-from account import AccountRepository, AccountService
+from account import AccountService
 from cogs.Games.BetFactory import BetFactory
 from cogs.Games.BetValidator import BetValidator
 from cogs.Games.GameValidator import GameValidator
 
 class Game(commands.Cog):
 
-    def __init__(self, bot, repo: AccountRepository, minimum_bet=None, maximum_bet=None):
+    def __init__(self, bot, account_service: AccountService, minimum_bet=None, maximum_bet=None):
         super().__init__()
         self.bot = bot
-        self.bet_validator = BetValidator(minimum_bet, maximum_bet)
-        self.game_validator = GameValidator()
-        self.account_service = AccountService(repo)
+        self.bet_validator = BetValidator(account_service, minimum_bet, maximum_bet)
+        self.game_validator = GameValidator(account_service, minimum_bet, maximum_bet)
+        self.account_service = account_service
         self.minimum_bet = minimum_bet
         self.maximum_bet = maximum_bet
         self.current_bet = None
-        self.game_messenger = GameMessenger(bot.channel, self.minimum_bet, self.maximum_bet, self.bet_validator)
+        self.game_messenger = GameMessenger(self.minimum_bet, self.maximum_bet, self.bet_validator)
+
+    @abstractmethod
+    async def start_game(self):
+        raise NotImplementedError("This method should be overridden by subclasses.")
+    
 
     async def asking_for_bet(self, ctx):
         if not await self.can_player_start_game(ctx):
@@ -38,7 +43,7 @@ class Game(commands.Cog):
                 self.current_bet = BetFactory.create_bet(int(self.current_bet.content), ctx.author.id)
                 return self.current_bet
             if await self.game_validator.is_quitting(self.current_bet):
-                await self.game_messenger.send_quit_game_message()
+                await self.game_messenger.send_quit_game_message(ctx)
                 return None
 
     async def wait_for_bet_message(self, ctx):
@@ -49,9 +54,5 @@ class Game(commands.Cog):
                 check=lambda m: m.author == ctx.author and m.channel == ctx.channel
             )
         except asyncio.TimeoutError:
-            await self.game_messenger.send_bet_timeout()
+            await self.game_messenger.send_bet_timeout(ctx)
             return None
-
-    @abstractmethod
-    async def start_game(self):
-        raise NotImplementedError("This method should be overridden by subclasses.")
